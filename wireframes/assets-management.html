@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assets Management — Wireframe</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+           font-size: 13px; color: #1a1a2e; background: #f4f5f7; display: flex;
+           flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* ── Annotation labels ── */
+    [data-component]::before {
+      content: attr(data-component);
+      position: absolute; top: 2px; left: 4px;
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; color: #7c6af7; opacity: .7; pointer-events: none;
+      z-index: 10;
+    }
+    [data-component] { position: relative; }
+
+    /* ── Colours ── */
+    :root {
+      --purple: #7c6af7;
+      --purple-light: #ede9fe;
+      --border: #e2e4e9;
+      --surface: #ffffff;
+      --text-secondary: #6b7280;
+      --chip-green: #d1fae5; --chip-green-text: #065f46;
+      --chip-amber: #fef3c7; --chip-amber-text: #92400e;
+      --chip-red:   #fee2e2; --chip-red-text:   #991b1b;
+      --chip-blue:  #dbeafe; --chip-blue-text:  #1e40af;
+    }
+
+    /* ══════════════════════════════════════
+       TOP NAV
+    ══════════════════════════════════════ */
+    .top-nav {
+      height: 52px; background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 16px; gap: 12px;
+      flex-shrink: 0; z-index: 100;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 14px; color: var(--purple); cursor: pointer;
+    }
+    .nav-logo-icon {
+      width: 28px; height: 28px; background: var(--purple); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 14px; font-weight: 800;
+    }
+    .nav-workspace {
+      display: flex; align-items: center; gap: 4px; padding: 4px 10px;
+      border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+      color: #374151; font-size: 12px;
+    }
+    .nav-workspace:hover { background: #f9fafb; }
+    .nav-divider { width: 1px; height: 20px; background: var(--border); }
+    .nav-crumb { font-size: 12px; color: var(--text-secondary); }
+    .nav-crumb strong { color: #111; }
+    .nav-spacer { flex: 1; }
+    .nav-search {
+      display: flex; align-items: center; gap: 6px;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 5px 10px; background: #f9fafb; width: 220px; font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .nav-icon-btn {
+      width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface); cursor: pointer; display: flex; align-items: center;
+      justify-content: center; color: var(--text-secondary); font-size: 15px; position: relative;
+    }
+    .nav-icon-btn:hover { background: #f9fafb; }
+    .notif-badge {
+      position: absolute; top: 3px; right: 3px; width: 7px; height: 7px;
+      background: #ef4444; border-radius: 50%; border: 1.5px solid #fff;
+    }
+    .avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--purple); color: #fff; display: flex;
+      align-items: center; justify-content: center; font-size: 11px;
+      font-weight: 700; cursor: pointer; flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       BODY LAYOUT
+    ══════════════════════════════════════ */
+    .body-wrap { display: flex; flex: 1; overflow: hidden; }
+
+    /* ══════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════ */
+    .sidebar {
+      width: 220px; background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+    }
+    .sidebar-section { padding: 12px 12px 0; }
+    .sidebar-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--text-secondary); margin-bottom: 6px; padding: 0 4px;
+    }
+    .tree-item {
+      display: flex; align-items: center; gap: 6px; padding: 5px 6px;
+      border-radius: 5px; cursor: pointer; font-size: 12px; color: #374151;
+    }
+    .tree-item:hover { background: #f3f4f6; }
+    .tree-item.active { background: var(--purple-light); color: var(--purple); font-weight: 600; }
+    .tree-icon { font-size: 13px; }
+    .tree-count {
+      margin-left: auto; font-size: 10px; color: var(--text-secondary);
+      background: #f3f4f6; border-radius: 10px; padding: 1px 6px;
+    }
+    .tree-sub { padding-left: 18px; }
+
+    .sidebar-divider { height: 1px; background: var(--border); margin: 10px 12px; }
+
+    .filter-chip {
+      display: flex; align-items: center; gap: 5px; padding: 4px 8px;
+      border-radius: 5px; cursor: pointer; font-size: 11px; color: #374151; margin-bottom: 2px;
+    }
+    .filter-chip:hover { background: #f3f4f6; }
+    .filter-chip .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+
+    .quota-wrap { padding: 12px; margin-top: auto; }
+    .quota-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
+    .quota-bar { height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
+    .quota-fill { height: 100%; background: var(--purple); border-radius: 2px; width: 61%; }
+    .quota-num { font-size: 10px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ══════════════════════════════════════
+       MAIN
+    ══════════════════════════════════════ */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      padding: 14px 16px; flex-shrink: 0;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .stat-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+    .stat-value { font-size: 22px; font-weight: 700; color: #111; }
+    .stat-sub { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+    .stat-badge {
+      display: inline-block; font-size: 9px; font-weight: 700;
+      border-radius: 10px; padding: 1px 6px; margin-top: 4px;
+    }
+    .badge-green { background: var(--chip-green); color: var(--chip-green-text); }
+    .badge-amber { background: var(--chip-amber); color: var(--chip-amber-text); }
+
+    /* ── Content header ── */
+    .content-header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;
+    }
+    .ch-top { display: flex; align-items: center; gap: 8px; }
+    .ch-breadcrumb { font-size: 12px; color: var(--text-secondary); }
+    .ch-breadcrumb span { color: #111; font-weight: 600; }
+    .ch-spacer { flex: 1; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 6px; font-size: 12px;
+      font-weight: 600; cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--purple); color: #fff; }
+    .btn-primary:hover { background: #6b5ae0; }
+    .btn-ghost {
+      background: transparent; color: #374151;
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: #f9fafb; }
+    .btn-danger { background: #fee2e2; color: #991b1b; border: none; }
+
+    .ch-bottom { display: flex; align-items: center; gap: 8px; }
+    .search-field {
+      display: flex; align-items: center; gap: 6px;
+      border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px;
+      background: #f9fafb; font-size: 12px; color: var(--text-secondary);
+      width: 240px;
+    }
+    .filter-select {
+      padding: 5px 10px; border: 1px solid var(--border); border-radius: 6px;
+      background: var(--surface); font-size: 12px; color: #374151; cursor: pointer;
+    }
+    .view-toggle {
+      display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+    }
+    .view-btn {
+      padding: 5px 9px; font-size: 14px; background: var(--surface);
+      cursor: pointer; color: var(--text-secondary); border: none;
+    }
+    .view-btn.active { background: var(--purple-light); color: var(--purple); }
+    .bulk-actions {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px; background: var(--purple-light);
+      border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--purple);
+    }
+
+    /* ── Scrollable content area ── */
+    .content-scroll { flex: 1; overflow-y: auto; padding: 12px 16px; }
+
+    /* ══════════════════════════════════════
+       LIST VIEW
+    ══════════════════════════════════════ */
+    .list-table { width: 100%; border-collapse: collapse; background: var(--surface);
+                  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .list-table th {
+      text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600;
+      color: var(--text-secondary); background: #f9fafb;
+      border-bottom: 1px solid var(--border); cursor: pointer; user-select: none;
+    }
+    .list-table th:hover { background: #f3f4f6; }
+    .list-table td { padding: 10px 12px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+    .list-table tr:last-child td { border-bottom: none; }
+    .list-table tr:hover td { background: #fafafa; }
+    .list-table tr.selected td { background: #f5f3ff; }
+    input[type="checkbox"] { cursor: pointer; accent-color: var(--purple); }
+
+    .file-cell { display: flex; align-items: center; gap: 8px; }
+    .file-icon {
+      width: 28px; height: 28px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center; font-size: 15px;
+      flex-shrink: 0;
+    }
+    .icon-img { background: #dbeafe; }
+    .icon-vid { background: #fce7f3; }
+    .icon-pdf { background: #fee2e2; }
+    .icon-doc { background: #ecfdf5; }
+    .icon-zip { background: #fef3c7; }
+
+    .file-name { font-weight: 500; font-size: 12px; color: #111; }
+    .file-meta { font-size: 10px; color: var(--text-secondary); }
+
+    .owner-cell { display: flex; align-items: center; gap: 6px; }
+    .owner-avatar {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #d1d5db; display: flex; align-items: center;
+      justify-content: center; font-size: 9px; font-weight: 700; color: #374151;
+    }
+
+    .chip {
+      display: inline-block; border-radius: 10px; padding: 2px 8px;
+      font-size: 10px; font-weight: 600;
+    }
+    .chip-green { background: var(--chip-green); color: var(--chip-green-text); }
+    .chip-amber { background: var(--chip-amber); color: var(--chip-amber-text); }
+    .chip-blue  { background: var(--chip-blue);  color: var(--chip-blue-text); }
+    .chip-red   { background: var(--chip-red);   color: var(--chip-red-text); }
+
+    .row-actions { display: flex; gap: 4px; opacity: 0; transition: opacity .15s; }
+    tr:hover .row-actions { opacity: 1; }
+    .icon-btn {
+      width: 24px; height: 24px; border-radius: 4px; border: 1px solid var(--border);
+      background: var(--surface); cursor: pointer; display: flex; align-items: center;
+      justify-content: center; font-size: 12px; color: var(--text-secondary);
+    }
+    .icon-btn:hover { background: #f3f4f6; }
+
+    /* ══════════════════════════════════════
+       GRID VIEW (hidden by default)
+    ══════════════════════════════════════ */
+    .grid-view {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .grid-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; cursor: pointer; position: relative;
+    }
+    .grid-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .grid-card.selected { border-color: var(--purple); box-shadow: 0 0 0 2px var(--purple-light); }
+    .grid-thumb {
+      height: 100px; background: #f3f4f6;
+      display: flex; align-items: center; justify-content: center; font-size: 32px;
+    }
+    .grid-thumb.blue { background: #dbeafe; }
+    .grid-thumb.pink { background: #fce7f3; }
+    .grid-thumb.green { background: #ecfdf5; }
+    .grid-thumb.amber { background: #fef3c7; }
+    .grid-body { padding: 8px 10px; }
+    .grid-name { font-size: 11px; font-weight: 600; color: #111; white-space: nowrap;
+                 overflow: hidden; text-overflow: ellipsis; }
+    .grid-size { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+    .grid-footer { display: flex; align-items: center; justify-content: space-between;
+                   padding: 6px 10px; border-top: 1px solid #f3f4f6; }
+    .grid-check { position: absolute; top: 6px; left: 6px; }
+
+    /* ══════════════════════════════════════
+       PAGINATION
+    ══════════════════════════════════════ */
+    .pagination {
+      display: flex; align-items: center; gap: 6px; justify-content: center;
+      padding: 12px 16px; background: var(--surface); border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .page-btn {
+      width: 28px; height: 28px; border-radius: 5px; border: 1px solid var(--border);
+      background: var(--surface); cursor: pointer; display: flex; align-items: center;
+      justify-content: center; font-size: 11px; font-weight: 600; color: #374151;
+    }
+    .page-btn.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .page-btn:hover:not(.active) { background: #f9fafb; }
+    .page-info { font-size: 11px; color: var(--text-secondary); margin-left: 8px; }
+    .page-spacer { flex: 1; }
+
+    /* ══════════════════════════════════════
+       TOGGLE LOGIC
+    ══════════════════════════════════════ */
+    body.grid-mode .list-view { display: none; }
+    body.grid-mode .grid-view { display: grid; }
+  </style>
+</head>
+<body>
+
+  <!-- ══ TOP NAV ══ -->
+  <!-- upgrade: TopNav + WorkspaceSelector -->
+  <nav class="top-nav" data-component="TopNav">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">Q</div>
+      QueenOne
+    </div>
+    <div class="nav-workspace">
+      Acme Corp &nbsp;▾
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-crumb">Assets</div>
+    <div class="nav-spacer"></div>
+    <div class="nav-search">🔍&nbsp; Search everything...</div>
+    <div class="nav-icon-btn">🔔<div class="notif-badge"></div></div>
+    <div class="nav-icon-btn">⚙️</div>
+    <div class="nav-icon-btn">❓</div>
+    <div class="avatar">AC</div>
+  </nav>
+
+  <div class="body-wrap">
+
+    <!-- ══ SIDEBAR ══ -->
+    <!-- upgrade: OrionDrawer + TreeNav -->
+    <aside class="sidebar" data-component="OrionDrawer + TreeNav">
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Folders</div>
+        <div class="tree-item active">
+          <span class="tree-icon">🏠</span> All Assets
+          <span class="tree-count">1,284</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-icon">📁</span> Brand Assets
+          <span class="tree-count">312</span>
+        </div>
+        <div class="tree-sub">
+          <div class="tree-item">
+            <span class="tree-icon">📂</span> Logos
+            <span class="tree-count">48</span>
+          </div>
+          <div class="tree-item">
+            <span class="tree-icon">📂</span> Icons
+            <span class="tree-count">124</span>
+          </div>
+          <div class="tree-item">
+            <span class="tree-icon">📂</span> Typography
+            <span class="tree-count">40</span>
+          </div>
+        </div>
+        <div class="tree-item">
+          <span class="tree-icon">📁</span> Marketing
+          <span class="tree-count">518</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-icon">📁</span> Product
+          <span class="tree-count">290</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-icon">📁</span> Legal &amp; Compliance
+          <span class="tree-count">164</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-icon">🗑️</span> Trash
+          <span class="tree-count">22</span>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">File Type</div>
+        <div class="filter-chip"><span class="dot" style="background:#3b82f6"></span>Images (462)</div>
+        <div class="filter-chip"><span class="dot" style="background:#ec4899"></span>Video (88)</div>
+        <div class="filter-chip"><span class="dot" style="background:#ef4444"></span>PDF (213)</div>
+        <div class="filter-chip"><span class="dot" style="background:#10b981"></span>Documents (314)</div>
+        <div class="filter-chip"><span class="dot" style="background:#f59e0b"></span>Archives (207)</div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Status</div>
+        <div class="filter-chip"><span class="dot" style="background:#10b981"></span>Approved (890)</div>
+        <div class="filter-chip"><span class="dot" style="background:#f59e0b"></span>Pending (247)</div>
+        <div class="filter-chip"><span class="dot" style="background:#ef4444"></span>Rejected (147)</div>
+      </div>
+
+      <div class="quota-wrap" data-component="StorageQuota">
+        <div class="quota-label">Storage</div>
+        <div class="quota-bar"><div class="quota-fill"></div></div>
+        <div class="quota-num">61.4 GB of 100 GB used</div>
+      </div>
+    </aside>
+
+    <!-- ══ MAIN ══ -->
+    <main class="main">
+
+      <!-- Stats bar -->
+      <!-- upgrade: OrionCard × 4 -->
+      <div class="stats-bar" data-component="StatsBar">
+        <div class="stat-card">
+          <div class="stat-label">Total Assets</div>
+          <div class="stat-value">1,284</div>
+          <div class="stat-badge badge-green">↑ 34 this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Storage Used</div>
+          <div class="stat-value">61.4 GB</div>
+          <div class="stat-badge badge-amber">61% capacity</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Review</div>
+          <div class="stat-value">247</div>
+          <div class="stat-badge badge-amber">18 overdue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Shared Links</div>
+          <div class="stat-value">83</div>
+          <div class="stat-badge badge-green">12 created today</div>
+        </div>
+      </div>
+
+      <!-- Content header -->
+      <!-- upgrade: BreadcrumbBar + ActionToolbar -->
+      <div class="content-header" data-component="ContentHeader">
+        <div class="ch-top">
+          <div class="ch-breadcrumb">
+            Assets &rsaquo; <span>Brand Assets</span> &rsaquo; Logos
+          </div>
+          <div class="ch-spacer"></div>
+          <div id="bulk-bar" class="bulk-actions" style="display:none">
+            <span id="sel-count">3 selected</span>
+            <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">⬇ Download</button>
+            <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">↗ Move</button>
+            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px">🗑 Delete</button>
+          </div>
+          <button class="btn btn-ghost">⬆ Upload</button>
+          <button class="btn btn-primary">+ New Folder</button>
+        </div>
+        <div class="ch-bottom">
+          <div class="search-field">🔍&nbsp; Search in Logos...</div>
+          <select class="filter-select"><option>All Types</option><option>Images</option><option>Video</option><option>PDF</option></select>
+          <select class="filter-select"><option>All Status</option><option>Approved</option><option>Pending</option><option>Rejected</option></select>
+          <select class="filter-select"><option>Any Owner</option></select>
+          <div class="ch-spacer"></div>
+          <div class="view-toggle">
+            <button class="view-btn active" id="btn-list" onclick="setView('list')">☰</button>
+            <button class="view-btn" id="btn-grid" onclick="setView('grid')">⊞</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SCROLLABLE AREA ══ -->
+      <div class="content-scroll">
+
+        <!-- LIST VIEW -->
+        <!-- upgrade: OrionDataGrid with row selection -->
+        <div class="list-view" data-component="OrionDataGrid">
+          <table class="list-table">
+            <thead>
+              <tr>
+                <th style="width:32px"><input type="checkbox" id="check-all" onchange="toggleAll(this)"></th>
+                <th>Name ▲</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Owner</th>
+                <th>Status</th>
+                <th>Modified</th>
+                <th style="width:80px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 -->
+              <tr class="selected">
+                <td><input type="checkbox" class="row-check" checked onchange="updateBulk()"></td>
+                <td>
+                  <div class="file-cell">
+                    <div class="file-icon icon-img">🖼️</div>
+                    <div>
+                      <div class="file-name">logo-primary-dark.svg</div>
+                      <div class="file-meta">SVG vector</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Image</td>
+                <td>48 KB</td>
+                <td>
+                  <div class="owner-cell">
+                    <div class="owner-avatar">JL</div> Jordan L.
+                  </div>
+                </td>
+                <td><span class="chip chip-green">Approved</span></td>
+                <td>2 min ago</td>
+                <td><div class="row-actions">
+                  <div class="icon-btn" title="Download">⬇</div>
+                  <div class="icon-btn" title="Share">↗</div>
+                  <div class="icon-btn" title="More">⋯</div>
+                </div></td>
+              </tr>
+              <!-- Row 2 -->
+              <tr>
+                <td><input type="checkbox" class="row-check" onchange="updateBulk()"></td>
+                <td>
+                  <div class="file-cell">
+                    <div class="file-icon icon-img">🖼️</div>
+                    <div>
+                      <div class="file-name">logo-primary-light.svg</div>
+                      <div class="file-meta">SVG vector</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Image</td>
+                <td>44 KB</td>
+                <td>
+                  <div class="owner-cell">
+                    <div class="owner-avatar">JL</div> Jordan L.
+                  </div>
+                </td>
+                <td><span class="chip chip-green">Approved</span></td>
+                <td>2 min ago</td>
+                <td><div class="row-actions">
+                  <div class="icon-btn">⬇</div>
+                  <div class="icon-btn">↗</div>
+                  <div class="icon-btn">⋯</div>
+                </div></td>
+              </tr>
+              <!-- Row 3 -->
+              <tr>
+                <td><input type="checkbox" class="row-check" onchange="updateBulk()"></td>
+                <td>
+                  <div class="file-cell">
+                    <div class="file-icon icon-img">🖼️</div>
+                    <div>
+                      <div class="file-name">logo-icon-only@2x.png</div>
+                      <div class="file-meta">PNG raster</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Image</td>
+                <td>128 KB</td>
+                <td>
+                  <div class="owner-cell">
+                    <div class="owner-avatar" style="background:#a78bfa">SM</div> Sara M.
+                  </div>
+                </td>
+                <td><span class="chip chip-amber">Pending</span></td>
+                <td>1 hr ago</td>
+                <td><div class="row-actions">
+                  <div class="icon-btn">⬇</div>
+                  <div class="icon-btn">↗</div>
+                  <div class="icon-btn">⋯</div>
+                </div></td>
+              </tr>
+              <!-- Row 4 -->
+              <tr class="selected">
+                <td><input type="checkbox" class="row-check" checked onchange="updateBulk()"></td>
+                <td>
+                  <div class="file-cell">
+                    <div class="file-icon icon-pdf">📄</div>
+                    <div>
+                      <div class="file-name">brand-guidelines-v3.pdf</div>
+                      <div class="file-meta">PDF document</div>
+                    </div>
+                  </div>
+                </td>
+                <td>PDF</td>
+                <td>3.4 MB</td>
+                <td>
+                  <div class="owner-cell">
+                    <div class="owner-avatar" style="background:#fbbf24; color:#78350f">AK</div> Alex K.
+                  </div>
+                </td>
+                <td><span class="chip chip-green">Approved</span></td>
+                <td>Yesterday</td>
+                <td><div class="row-actions">
+                  <div class="icon-btn">⬇</div>
+                  <div class="icon-btn">↗</div>
+                  <div class="icon-btn">⋯</div>
+                </div></td>
+              </tr>
+              <!-- Row 5 -->
+              <tr>
+                <td><input type="checkbox" class="row-check" onchange="updateBulk()"></td>
+                <td>
+                  <div class="file-cell">
+                    <div class="file-icon icon-vid">🎬</div>
+                    <div>
+                      <div class="file-name">brand-intro-animation.mp4</div>
+                      <div class="file-meta">MP4 video · 1080p</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Video</td>
+                <td>184 MB</td>
+                <td>
+                  <div class="owner-cell">
+                    <div class="owner-avatar" style="background:#34d399; color:#065f46">TW</div> Tyler W.
+                  </div>
+                </td>
+                <td><span class="chip chip-blue">Shared</span></td>
+                <td>3 days ago</td>
+                <td><div class="row-actions">
+                  <div class="icon-btn">⬇</div>
+                  <div class="icon-btn">↗</div>
+                  <div class="icon-btn">⋯</div>
+                </div></td>
+              </tr>
+              <!-- Row 6 -->
+              <tr class="selected">
+                <td><input type="checkbox" class="row-check" checked onchange="updateBulk()"></td>
+                <td>
+                  <div class="file-cell">
+                    <div class="file-icon icon-zip">📦</div>
+                    <div>
+                      <div class="file-name">logo-pack-all-formats.zip</div>
+                      <div class="file-meta">ZIP archive</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Archive</td>
+                <td>2.1 MB</td>
+                <td>
+                  <div class="owner-cell">
+                    <div class="owner-avatar">JL</div> Jordan L.
+                  </div>
+                </td>
+                <td><span class="chip chip-red">Rejected</span></td>
+                <td>Apr 30</td>
+                <td><div class="row-actions">
+                  <div class="icon-btn">⬇</div>
+                  <div class="icon-btn">↗</div>
+                  <div class="icon-btn">⋯</div>
+                </div></td>
+              </tr>
+              <!-- Row 7 -->
+              <tr>
+                <td><input type="checkbox" class="row-check" onchange="updateBulk()"></td>
+                <td>
+                  <div class="file-cell">
+                    <div class="file-icon icon-doc">📝</div>
+                    <div>
+                      <div class="file-name">logo-usage-do-dont.docx</div>
+                      <div class="file-meta">Word document</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Document</td>
+                <td>890 KB</td>
+                <td>
+                  <div class="owner-cell">
+                    <div class="owner-avatar" style="background:#a78bfa">SM</div> Sara M.
+                  </div>
+                </td>
+                <td><span class="chip chip-amber">Pending</span></td>
+                <td>Apr 28</td>
+                <td><div class="row-actions">
+                  <div class="icon-btn">⬇</div>
+                  <div class="icon-btn">↗</div>
+                  <div class="icon-btn">⋯</div>
+                </div></td>
+              </tr>
+              <!-- Row 8 -->
+              <tr>
+                <td><input type="checkbox" class="row-check" onchange="updateBulk()"></td>
+                <td>
+                  <div class="file-cell">
+                    <div class="file-icon icon-img">🖼️</div>
+                    <div>
+                      <div class="file-name">wordmark-horizontal.ai</div>
+                      <div class="file-meta">Adobe Illustrator</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Image</td>
+                <td>1.2 MB</td>
+                <td>
+                  <div class="owner-cell">
+                    <div class="owner-avatar" style="background:#fbbf24; color:#78350f">AK</div> Alex K.
+                  </div>
+                </td>
+                <td><span class="chip chip-green">Approved</span></td>
+                <td>Apr 25</td>
+                <td><div class="row-actions">
+                  <div class="icon-btn">⬇</div>
+                  <div class="icon-btn">↗</div>
+                  <div class="icon-btn">⋯</div>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div><!-- /list-view -->
+
+        <!-- GRID VIEW -->
+        <!-- upgrade: OrionCard grid + AssetThumbnail -->
+        <div class="grid-view" data-component="AssetGrid">
+          <div class="grid-card selected">
+            <input type="checkbox" class="grid-check" checked>
+            <div class="grid-thumb blue">🖼️</div>
+            <div class="grid-body">
+              <div class="grid-name">logo-primary-dark.svg</div>
+              <div class="grid-size">48 KB</div>
+            </div>
+            <div class="grid-footer">
+              <span class="chip chip-green">Approved</span>
+              <div class="icon-btn">⋯</div>
+            </div>
+          </div>
+          <div class="grid-card">
+            <input type="checkbox" class="grid-check">
+            <div class="grid-thumb blue">🖼️</div>
+            <div class="grid-body">
+              <div class="grid-name">logo-primary-light.svg</div>
+              <div class="grid-size">44 KB</div>
+            </div>
+            <div class="grid-footer">
+              <span class="chip chip-green">Approved</span>
+              <div class="icon-btn">⋯</div>
+            </div>
+          </div>
+          <div class="grid-card">
+            <input type="checkbox" class="grid-check">
+            <div class="grid-thumb blue">🖼️</div>
+            <div class="grid-body">
+              <div class="grid-name">logo-icon-only@2x.png</div>
+              <div class="grid-size">128 KB</div>
+            </div>
+            <div class="grid-footer">
+              <span class="chip chip-amber">Pending</span>
+              <div class="icon-btn">⋯</div>
+            </div>
+          </div>
+          <div class="grid-card selected">
+            <input type="checkbox" class="grid-check" checked>
+            <div class="grid-thumb" style="background:#fee2e2">📄</div>
+            <div class="grid-body">
+              <div class="grid-name">brand-guidelines-v3.pdf</div>
+              <div class="grid-size">3.4 MB</div>
+            </div>
+            <div class="grid-footer">
+              <span class="chip chip-green">Approved</span>
+              <div class="icon-btn">⋯</div>
+            </div>
+          </div>
+          <div class="grid-card">
+            <input type="checkbox" class="grid-check">
+            <div class="grid-thumb pink">🎬</div>
+            <div class="grid-body">
+              <div class="grid-name">brand-intro-animation.mp4</div>
+              <div class="grid-size">184 MB</div>
+            </div>
+            <div class="grid-footer">
+              <span class="chip chip-blue">Shared</span>
+              <div class="icon-btn">⋯</div>
+            </div>
+          </div>
+          <div class="grid-card selected">
+            <input type="checkbox" class="grid-check" checked>
+            <div class="grid-thumb amber">📦</div>
+            <div class="grid-body">
+              <div class="grid-name">logo-pack-all-formats.zip</div>
+              <div class="grid-size">2.1 MB</div>
+            </div>
+            <div class="grid-footer">
+              <span class="chip chip-red">Rejected</span>
+              <div class="icon-btn">⋯</div>
+            </div>
+          </div>
+          <div class="grid-card">
+            <input type="checkbox" class="grid-check">
+            <div class="grid-thumb green">📝</div>
+            <div class="grid-body">
+              <div class="grid-name">logo-usage-do-dont.docx</div>
+              <div class="grid-size">890 KB</div>
+            </div>
+            <div class="grid-footer">
+              <span class="chip chip-amber">Pending</span>
+              <div class="icon-btn">⋯</div>
+            </div>
+          </div>
+          <div class="grid-card">
+            <input type="checkbox" class="grid-check">
+            <div class="grid-thumb blue">🖼️</div>
+            <div class="grid-body">
+              <div class="grid-name">wordmark-horizontal.ai</div>
+              <div class="grid-size">1.2 MB</div>
+            </div>
+            <div class="grid-footer">
+              <span class="chip chip-green">Approved</span>
+              <div class="icon-btn">⋯</div>
+            </div>
+          </div>
+        </div><!-- /grid-view -->
+
+      </div><!-- /content-scroll -->
+
+      <!-- ══ PAGINATION ══ -->
+      <!-- upgrade: OrionPagination -->
+      <div class="pagination" data-component="OrionPagination">
+        <div class="page-spacer">
+          <span class="page-info" id="pagination-info">3 of 48 selected</span>
+        </div>
+        <button class="page-btn">‹</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <span style="font-size:12px;color:#9ca3af">…</span>
+        <button class="page-btn">12</button>
+        <button class="page-btn">›</button>
+        <div class="page-spacer" style="text-align:right">
+          <span class="page-info">48 items &nbsp;·&nbsp; 4 per page</span>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /body-wrap -->
+
+  <script>
+    function setView(mode) {
+      document.body.classList.toggle('grid-mode', mode === 'grid');
+      document.getElementById('btn-list').classList.toggle('active', mode === 'list');
+      document.getElementById('btn-grid').classList.toggle('active', mode === 'grid');
+    }
+
+    function toggleAll(cb) {
+      document.querySelectorAll('.row-check').forEach(c => {
+        c.checked = cb.checked;
+        c.closest('tr').classList.toggle('selected', cb.checked);
+      });
+      updateBulk();
+    }
+
+    function updateBulk() {
+      const checked = document.querySelectorAll('.row-check:checked');
+      const bar = document.getElementById('bulk-bar');
+      const sc  = document.getElementById('sel-count');
+      const pi  = document.getElementById('pagination-info');
+      bar.style.display = checked.length ? 'flex' : 'none';
+      sc.textContent  = checked.length + ' selected';
+      pi.textContent  = checked.length + ' of 48 selected';
+    }
+
+    // init
+    updateBulk();
+  </script>
+</body>
+</html>
