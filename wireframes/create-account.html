@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Account — Wireframe</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js"></script>
@@ -21,15 +21,13 @@
       CssBaseline,
       createTheme,
       Box,
-      Card,
-      CardContent,
+      Stack,
       Typography,
       TextField,
       Button,
-      Stack,
       FormControlLabel,
       Checkbox,
-      Fade,
+      Link,
     } = MaterialUI;
 
     const theme = createTheme({
@@ -59,210 +57,116 @@
       },
     });
 
-    {/* ── Create Account Form ───────────────────── */}
-    {/* → ConnectUI: <FormCard> | spacing.lg, surface.raised */}
-    function CreateAccountForm({ agreed, onAgreedChange, onSubmit, onSignIn }) {
-      return (
-        <Card>
-          <CardContent sx={{ p: 4 }}>
-            <Stack spacing={3}>
+    function App() {
+      const [fullName, setFullName] = React.useState('');
+      const [email, setEmail] = React.useState('');
+      const [password, setPassword] = React.useState('');
+      const [confirmPassword, setConfirmPassword] = React.useState('');
+      const [agreed, setAgreed] = React.useState(false);
 
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        console.info('Create Account submitted', { fullName, email, agreed });
+      };
+
+      const handleSignIn = (e) => {
+        e.preventDefault();
+        console.info('Navigate to sign-in (placeholder)');
+      };
+
+      return (
+        <Box
+          sx={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'background.default',
+            px: 2,
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: 460,
+              backgroundColor: 'background.paper',
+              border: '1px solid #E0E0E0',
+              p: 4,
+            }}
+          >
+            <Stack spacing={3}>
+              {/* Header */}
               <Stack spacing={1}>
-                <Typography variant="h5" fontWeight={600}>
-                  Create Account
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h5">Create Account</Typography>
+                <Typography variant="body2" sx={{ color: '#757575' }}>
                   Fill in the information below to continue.
                 </Typography>
               </Stack>
 
-              {/* ── Form Fields Stack ──────────────────────── */}
-              {/* → ConnectUI: <TextField> (outlined) | typography.body, spacing.md */}
-              <Stack spacing={2}>
+              {/* ── Sign-up Form ─────────────────────────── */}
+              {/* → ConnectUI: <SignUpForm> | typography.h5 + form.standard | spacing.lg between groups */}
+              <Stack component="form" onSubmit={handleSubmit} spacing={2}>
                 <TextField
                   label="Full Name"
-                  type="text"
                   variant="outlined"
                   fullWidth
-                  placeholder="Enter your name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
                 <TextField
                   label="Email Address"
                   type="email"
                   variant="outlined"
                   fullWidth
-                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
                   label="Password"
                   type="password"
                   variant="outlined"
                   fullWidth
-                  placeholder="Enter a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <TextField
                   label="Confirm Password"
                   type="password"
                   variant="outlined"
                   fullWidth
-                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-              </Stack>
 
-              {/* ── Terms Checkbox Row ─────────────────────── */}
-              {/* → ConnectUI: <Checkbox + Label> | typography.body2 */}
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={agreed}
-                    onChange={(e) => onAgreedChange(e.target.checked)}
-                    sx={{ color: '#424242', '&.Mui-checked': { color: '#424242' } }}
-                  />
-                }
-                label={
-                  <Typography variant="body2">
-                    I agree to the terms and conditions
-                  </Typography>
-                }
-              />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={agreed}
+                      onChange={(e) => setAgreed(e.target.checked)}
+                    />
+                  }
+                  label="I agree to the terms and conditions"
+                />
 
-              {/* ── Primary Action ─────────────────────────── */}
-              {/* → ConnectUI: <Button variant="primary"> | spacing.md */}
-              <Button
-                variant="outlined"
-                fullWidth
-                size="large"
-                onClick={onSubmit}
-                sx={{
-                  borderColor: '#424242',
-                  color: '#212121',
-                  '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: '#212121' },
-                }}
-              >
-                Create Account
-              </Button>
-
-              {/* ── Secondary Action ───────────────────────── */}
-              {/* → ConnectUI: <Link> | typography.body2 */}
-              <Typography variant="body2" align="center" color="text.secondary">
-                Already have an account?{' '}
-                <span
-                  onClick={onSignIn}
-                  style={{ cursor: 'pointer', textDecoration: 'underline', color: '#212121' }}
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  type="submit"
                 >
-                  Sign in
-                </span>
-              </Typography>
+                  Create Account
+                </Button>
 
-            </Stack>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    function SuccessState({ onBack }) {
-      return (
-        <Card>
-          <CardContent sx={{ p: 4 }}>
-            <Stack spacing={3}>
-              <Stack spacing={1}>
-                <Typography variant="h5" fontWeight={600}>
-                  Account created
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Your account has been successfully created.
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#757575', textAlign: 'center' }}
+                >
+                  Already have an account?{' '}
+                  <Link href="#" onClick={handleSignIn}>
+                    Sign in
+                  </Link>
                 </Typography>
               </Stack>
-              <Button
-                variant="outlined"
-                fullWidth
-                size="large"
-                onClick={onBack}
-                sx={{
-                  borderColor: '#424242',
-                  color: '#212121',
-                  '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: '#212121' },
-                }}
-              >
-                Back to form
-              </Button>
             </Stack>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    function SignInStub({ onBack }) {
-      return (
-        <Card>
-          <CardContent sx={{ p: 4 }}>
-            <Stack spacing={3}>
-              <Stack spacing={1}>
-                <Typography variant="h5" fontWeight={600}>
-                  Sign in placeholder
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  This screen is a stub. The sign-in flow lives here.
-                </Typography>
-              </Stack>
-              <Button
-                variant="outlined"
-                fullWidth
-                size="large"
-                onClick={onBack}
-                sx={{
-                  borderColor: '#424242',
-                  color: '#212121',
-                  '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: '#212121' },
-                }}
-              >
-                Back to create
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    {/* ── Motion: view-switch → ConnectUI: route transition | fade 200ms */}
-    function App() {
-      const [view, setView] = React.useState('form');
-      const [agreed, setAgreed] = React.useState(false);
-
-      return (
-        <Box
-          sx={{
-            minHeight: '100vh',
-            backgroundColor: 'background.default',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            pt: 8,
-            pb: 8,
-            px: 2,
-          }}
-        >
-          <Box sx={{ width: '100%', maxWidth: 460 }}>
-            <Fade in={view === 'form'} timeout={200} unmountOnExit>
-              <div>
-                <CreateAccountForm
-                  agreed={agreed}
-                  onAgreedChange={setAgreed}
-                  onSubmit={() => setView('success')}
-                  onSignIn={() => setView('signin')}
-                />
-              </div>
-            </Fade>
-            <Fade in={view === 'success'} timeout={200} unmountOnExit>
-              <div>
-                <SuccessState onBack={() => setView('form')} />
-              </div>
-            </Fade>
-            <Fade in={view === 'signin'} timeout={200} unmountOnExit>
-              <div>
-                <SignInStub onBack={() => setView('form')} />
-              </div>
-            </Fade>
           </Box>
         </Box>
       );
