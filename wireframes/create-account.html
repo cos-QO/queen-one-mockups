@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — Wireframe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js"></script>
+  <script src="https://unpkg.com/@emotion/styled@11/dist/emotion-styled.umd.min.js"></script>
+  <script src="https://unpkg.com/@mui/material@5/umd/material-ui.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { background-color: #F5F5F5; font-family: 'Inter', sans-serif; }
+    #root { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const {
+      ThemeProvider,
+      createTheme,
+      Paper,
+      Stack,
+      Box,
+      Typography,
+      TextField,
+      Button,
+      FormControlLabel,
+      Checkbox,
+      Link,
+      Fade,
+      CssBaseline,
+    } = MaterialUI;
+
+    // Theme — exact object from brief, no changes
+    const theme = createTheme({
+      palette: {
+        mode: 'light',
+        primary:    { main: '#424242' },
+        secondary:  { main: '#757575' },
+        error:      { main: '#757575' },
+        warning:    { main: '#9E9E9E' },
+        info:       { main: '#757575' },
+        success:    { main: '#616161' },
+        background: { default: '#F5F5F5', paper: '#FFFFFF' },
+        text: { primary: '#212121', secondary: '#757575', disabled: '#BDBDBD' },
+        divider: '#E0E0E0',
+      },
+      typography: { fontFamily: 'Inter, sans-serif' },
+      shadows: Array(25).fill('none'),
+      components: {
+        MuiPaper:   { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E0E0E0' } } },
+        MuiCard:    { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E0E0E0' } } },
+        MuiAppBar:  { defaultProps: { elevation: 0 }, styleOverrides: { root: { borderBottom: '1px solid #E0E0E0' } } },
+        MuiButton:  { defaultProps: { disableElevation: true } },
+        MuiDialog:  { defaultProps: { elevation: 0 }, styleOverrides: { paper: { border: '1px solid #E0E0E0' } } },
+        MuiDrawer:  { styleOverrides: { paper: { border: '1px solid #E0E0E0', boxShadow: 'none' } } },
+        MuiPopover: { styleOverrides: { paper: { border: '1px solid #E0E0E0', boxShadow: 'none' } } },
+        MuiMenu:    { styleOverrides: { paper: { border: '1px solid #E0E0E0', boxShadow: 'none' } } },
+      },
+    });
+
+    function CreateAccountForm({ values, onChange, feedback, onSubmit, onSignIn }) {
+      const { name, email, password, confirmPassword, agreed } = values;
+      const { setName, setEmail, setPassword, setConfirm, setAgreed } = onChange;
+
+      return (
+        /* ── Page Container ─────────────────────────── */
+        /* → ConnectUI: AuthLayout | spacing.xl        */
+        <Box sx={{ width: '100%', maxWidth: 460 }}>
+
+          {/* ── Form Card ──────────────────────────────── */}
+          {/* → ConnectUI: FormCard | spacing.lg */}
+          <Paper sx={{ padding: 4 }}>
+            <Stack spacing={3}>
+
+              {/* Title + Description */}
+              <Stack spacing={1}>
+                <Typography
+                  variant="h5"
+                  sx={{ fontWeight: 600, color: '#212121' }}
+                >
+                  Create Account
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#757575' }}>
+                  Fill in the information below to continue.
+                </Typography>
+              </Stack>
+
+              {/* ── Form Fields Group ──────────────────────── */}
+              {/* → ConnectUI: FormFieldGroup | spacing.md */}
+              <Stack spacing={2}>
+                <TextField
+                  label="Full Name"
+                  type="text"
+                  variant="outlined"
+                  fullWidth
+                  size="medium"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <TextField
+                  label="Email Address"
+                  type="email"
+                  variant="outlined"
+                  fullWidth
+                  size="medium"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                  label="Password"
+                  type="password"
+                  variant="outlined"
+                  fullWidth
+                  size="medium"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <TextField
+                  label="Confirm Password"
+                  type="password"
+                  variant="outlined"
+                  fullWidth
+                  size="medium"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirm(e.target.value)}
+                />
+              </Stack>
+
+              {/* ── Terms Checkbox ─────────────────────────── */}
+              {/* → ConnectUI: ConsentCheckbox | typography.body2 */}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    I agree to the terms and conditions
+                  </Typography>
+                }
+              />
+
+              {/* ── Primary Action ─────────────────────────── */}
+              {/* → ConnectUI: PrimaryButton | variant.outlined */}
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={onSubmit}
+              >
+                Create Account
+              </Button>
+
+              {/* ── Secondary Action ───────────────────────── */}
+              {/* → ConnectUI: TextLink | typography.body2 */}
+              <Stack direction="row" spacing={0.5} justifyContent="center">
+                <Typography variant="body2" sx={{ color: '#757575' }}>
+                  Already have an account?
+                </Typography>
+                <Link
+                  component="button"
+                  variant="body2"
+                  onClick={onSignIn}
+                  underline="hover"
+                  sx={{ color: '#212121' }}
+                >
+                  Sign in
+                </Link>
+              </Stack>
+
+              {/* Feedback line — fades in when feedback state changes */}
+              <Fade in={feedback !== null} timeout={150}>
+                <Box sx={{ textAlign: 'center', minHeight: 20 }}>
+                  <Typography variant="body2" sx={{ color: '#757575' }}>
+                    {feedback === 'submitted' && 'Submitted (placeholder)'}
+                    {feedback === 'sign-in-clicked' && 'Sign in clicked (placeholder)'}
+                  </Typography>
+                </Box>
+              </Fade>
+
+            </Stack>
+          </Paper>
+        </Box>
+      );
+    }
+
+    // ── App — all state lives here ──────────────────
+    function App() {
+      const [name, setName]               = React.useState('');
+      const [email, setEmail]             = React.useState('');
+      const [password, setPassword]       = React.useState('');
+      const [confirmPassword, setConfirm] = React.useState('');
+      const [agreed, setAgreed]           = React.useState(false);
+      const [feedback, setFeedback]       = React.useState(null); // null | 'submitted' | 'sign-in-clicked'
+
+      const handleSubmit = () => setFeedback('submitted');
+      const handleSignIn = () => setFeedback('sign-in-clicked');
+
+      return (
+        <CreateAccountForm
+          values={{ name, email, password, confirmPassword, agreed }}
+          onChange={{ setName, setEmail, setPassword, setConfirm, setAgreed }}
+          feedback={feedback}
+          onSubmit={handleSubmit}
+          onSignIn={handleSignIn}
+        />
+      );
+    }
+
+    // ── Render ──────────────────────────────────────
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
+    );
+  </script>
+</body>
+</html>
