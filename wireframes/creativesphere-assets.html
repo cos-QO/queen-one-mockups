@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CREATIVESPHERE — Asset Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js"></script>
+  <script src="https://unpkg.com/@emotion/styled@11/dist/emotion-styled.umd.min.js"></script>
+  <script src="https://unpkg.com/@mui/material@5/umd/material-ui.development.js"></script>
+  <!-- Iconoir icons are inlined as SVG components — no CDN needed -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { font-family: 'Inter', sans-serif; background: #EAEAF0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const {
+      createTheme, ThemeProvider,
+      AppBar, Toolbar, Box, Stack, Typography, Button, IconButton,
+      Breadcrumbs, Chip, TextField, InputAdornment,
+      ToggleButtonGroup, ToggleButton, MenuItem, Select, FormControl,
+      Drawer, Accordion, AccordionSummary, AccordionDetails,
+      FormGroup, FormControlLabel, Checkbox,
+      Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TableSortLabel,
+      Pagination, Tabs, Tab,
+      Card, CardContent,
+      Dialog, DialogTitle, DialogContent, DialogActions,
+      List, ListItem, ListItemText, ListItemAvatar, Avatar,
+      Switch, Snackbar, Alert, Collapse
+    } = MaterialUI;
+
+    // ── Icon Library (Iconoir SVG inline) ────────────────────────────────────
+    // ANTI-PATTERN[QO]: icons defined inline because @iconoir/react has no UMD CDN build.
+    // Replace with: import { Search, ... } from '@iconoir/react' in the ConnectUI build.
+    function mkIcon(d) {
+      return function IcoIcon({ width=20, height=20, strokeWidth=1.5, style }) {
+        return (
+          <svg width={width} height={height} viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" strokeWidth={strokeWidth}
+               dangerouslySetInnerHTML={{ __html: d }}
+               style={{ display:'inline-block', verticalAlign:'middle', flexShrink:0, ...style }} />
+        );
+      };
+    }
+    const Search = mkIcon('<path d="M17 17L21 21" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z" stroke-linecap="round" stroke-linejoin="round"/>');
+    const Upload = mkIcon('<path d="M6 20L18 20" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16V4M12 4L15.5 7.5M12 4L8.5 7.5" stroke-linecap="round" stroke-linejoin="round"/>');
+    const GitCommit = mkIcon('<path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12H3" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12L21 12" stroke-linecap="round" stroke-linejoin="round"/>');
+    const MediaImagePlus = mkIcon('<path d="M13 21H3.6C3.26863 21 3 20.7314 3 20.4V3.6C3 3.26863 3.26863 3 3.6 3H20.4C20.7314 3 21 3.26863 21 3.6V13" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16L10 13L15.5 15.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 10C14.8954 10 14 9.10457 14 8C14 6.89543 14.8954 6 16 6C17.1046 6 18 6.89543 18 8C18 9.10457 17.1046 10 16 10Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 19H19M22 19H19M19 19V16M19 19V22" stroke-linecap="round" stroke-linejoin="round"/>');
+    const WarningCircle = mkIcon('<path d="M12 7L12 13" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17.01L12.01 16.9989" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke-linecap="round" stroke-linejoin="round"/>');
+    const InfoCircle = mkIcon('<path d="M12 11.5V16.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.51L12.01 7.49889" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke-linecap="round" stroke-linejoin="round"/>');
+    const Table2Columns = mkIcon('<path d="M3 20.4V3.6C3 3.26863 3.26863 3 3.6 3H20.4C20.7314 3 21 3.26863 21 3.6V20.4C21 20.7314 20.7314 21 20.4 21H3.6C3.26863 21 3 20.7314 3 20.4Z"/><path d="M3 16.5H21"/><path d="M3 12H21"/><path d="M12 3V21"/>');
+    const ViewGrid = mkIcon('<path d="M14 20.4V14.6C14 14.2686 14.2686 14 14.6 14H20.4C20.7314 14 21 14.2686 21 14.6V20.4C21 20.7314 20.7314 21 20.4 21H14.6C14.2686 21 14 20.7314 14 20.4Z"/><path d="M3 20.4V14.6C3 14.2686 3.26863 14 3.6 14H9.4C9.73137 14 10 14.2686 10 14.6V20.4C10 20.7314 9.73137 21 9.4 21H3.6C3.26863 21 3 20.7314 3 20.4Z"/><path d="M14 9.4V3.6C14 3.26863 14.2686 3 14.6 3H20.4C20.7314 3 21 3.26863 21 3.6V9.4C21 9.73137 20.7314 10 20.4 10H14.6C14.2686 10 14 9.73137 14 9.4Z"/><path d="M3 9.4V3.6C3 3.26863 3.26863 3 3.6 3H9.4C9.73137 3 10 3.26863 10 3.6V9.4C10 9.73137 9.73137 10 9.4 10H3.6C3.26863 10 3 9.73137 3 9.4Z"/>');
+    const Sort = mkIcon('<path d="M10 14H2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10H2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 6H2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 20V4M19 20L22 17M19 20L16 17M19 4L22 7M19 4L16 7" stroke-linecap="round" stroke-linejoin="round"/>');
+    const Xmark = mkIcon('<path d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426" stroke-linecap="round" stroke-linejoin="round"/>');
+    const NavArrowLeft = mkIcon('<path d="M15 6L9 12L15 18" stroke-linecap="round" stroke-linejoin="round"/>');
+    const NavArrowRight = mkIcon('<path d="M9 6L15 12L9 18" stroke-linecap="round" stroke-linejoin="round"/>');
+    const NavRight = NavArrowRight;
+    const ArrowRight = mkIcon('<path d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5" stroke-linecap="round" stroke-linejoin="round"/>');
+    const EmptyPage = mkIcon('<path d="M4 21.4V2.6C4 2.26863 4.26863 2 4.6 2H16.2515C16.4106 2 16.5632 2.06321 16.6757 2.17574L19.8243 5.32426C19.9368 5.43679 20 5.5894 20 5.74853V21.4C20 21.7314 19.7314 22 19.4 22H4.6C4.26863 22 4 21.7314 4 21.4Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 2V5.4C16 5.73137 16.2686 6 16.6 6H20" stroke-linecap="round" stroke-linejoin="round"/>');
+    const RefreshDouble = mkIcon('<path d="M21.1679 8C19.6247 4.46819 16.1006 2 11.9999 2C6.81459 2 2.55104 5.94668 2.04932 11" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 8H21.4C21.7314 8 22 7.73137 22 7.4V3" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.88146 16C4.42458 19.5318 7.94874 22 12.0494 22C17.2347 22 21.4983 18.0533 22 13" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.04932 16H2.64932C2.31795 16 2.04932 16.2686 2.04932 16.6V21" stroke-linecap="round" stroke-linejoin="round"/>');
+    const CloudUpload = mkIcon('<path d="M12 22V13M12 13L15.5 16.5M12 13L8.5 16.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 17.6073C21.4937 17.0221 23 15.6889 23 13C23 9 19.6667 8 18 8C18 6 18 2 12 2C6 2 6 6 6 8C4.33333 8 1 9 1 13C1 15.6889 2.50628 17.0221 4 17.6073" stroke-linecap="round" stroke-linejoin="round"/>');
+    const ClockRotateLeft = mkIcon('<path d="M4.5 8C8.5 8 11 8 15 8C15 8 15 8 15 8C15 8 20 8 20 12.7059C20 18 15 18 15 18C11.5714 18 9.71429 18 6.28571 18" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 11.5C6.13317 10.1332 5.36683 9.36683 4 8C5.36683 6.63317 6.13317 5.86683 7.5 4.5" stroke-linecap="round" stroke-linejoin="round"/>');
+    const Package = mkIcon('<path d="M20 5.99999L20 18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H18C19.1045 4 19.9999 4.89543 20 5.99999Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9V4" stroke-linecap="round" stroke-linejoin="round"/>');
+    const Folder = mkIcon('<path d="M2 11V4.6C2 4.26863 2.26863 4 2.6 4H8.77805C8.92127 4 9.05977 4.05124 9.16852 4.14445L12.3315 6.85555C12.4402 6.94876 12.5787 7 12.722 7H21.4C21.7314 7 22 7.26863 22 7.6V11M2 11V19.4C2 19.7314 2.26863 20 2.6 20H21.4C21.7314 20 22 19.7314 22 19.4V11M2 11H22" stroke-linecap="round" stroke-linejoin="round"/>');
+    const Building = mkIcon('<path d="M10 9.01L10.01 8.99889" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 9.01L14.01 8.99889" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 13.01L10.01 12.9989" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 13.01L14.01 12.9989" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 17.01L10.01 16.9989" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 20.4V5.6C6 5.26863 6.26863 5 6.6 5H12V3.6C12 3.26863 12.2686 3 12.6 3H17.4C17.7314 3 18 3.26863 18 3.6V20.4C18 20.7314 17.7314 21 17.4 21H6.6C6.26863 21 6 20.7314 6 20.4Z" stroke-linecap="round" stroke-linejoin="round"/>');
+    const Community = mkIcon('<path d="M7 18V17C7 14.2386 9.23858 12 12 12C14.7614 12 17 14.2386 17 17V18" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 18V17C1 15.3431 2.34315 14 4 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 18V17C23 15.3431 21.6569 14 20 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 14C5.10457 14 6 13.1046 6 12C6 10.8954 5.10457 10 4 10C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 14C21.1046 14 22 13.1046 22 12C22 10.8954 21.1046 10 20 10C18.8954 10 18 10.8954 18 12C18 13.1046 18.8954 14 20 14Z" stroke-linecap="round" stroke-linejoin="round"/>');
+    const Tag = mkIcon('<path d="M3 17.4V6.6C3 6.26863 3.26863 6 3.6 6H16.6789C16.8795 6 17.0668 6.10026 17.1781 6.26718L20.7781 11.6672C20.9125 11.8687 20.9125 12.1313 20.7781 12.3328L17.1781 17.7328C17.0668 17.8997 16.8795 18 16.6789 18H3.6C3.26863 18 3 17.7314 3 17.4Z"/>');
+    const Plus = mkIcon('<path d="M6 12H12M18 12H12M12 12V6M12 12V18" stroke-linecap="round" stroke-linejoin="round"/>');
+    const MoreHoriz = mkIcon('<path d="M20 12.5C20.2761 12.5 20.5 12.2761 20.5 12C20.5 11.7239 20.2761 11.5 20 11.5C19.7239 11.5 19.5 11.7239 19.5 12C19.5 12.2761 19.7239 12.5 20 12.5Z" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12.5C12.2761 12.5 12.5 12.2761 12.5 12C12.5 11.7239 12.2761 11.5 12 11.5C11.7239 11.5 11.5 11.7239 11.5 12C11.5 12.2761 11.7239 12.5 12 12.5Z" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 12.5C4.27614 12.5 4.5 12.2761 4.5 12C4.5 11.7239 4.27614 11.5 4 11.5C3.72386 11.5 3.5 11.7239 3.5 12C3.5 12.2761 3.72386 12.5 4 12.5Z" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"/>');
+    const User = mkIcon('<path d="M5 20V19C5 15.134 8.13401 12 12 12C15.866 12 19 15.134 19 19V20" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke-linecap="round" stroke-linejoin="round"/>');
+    const NavArrowDown = mkIcon('<path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round"/>');
+    const CheckCircle = mkIcon('<path d="M7 12.5L10 15.5L17 8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke-linecap="round" stroke-linejoin="round"/>');
+
+    // ── Stub Data ─────────────────────────────────────────────────────────────
+    const STUB_ASSETS = [
+      { id: 'a1', filename: 'hero-banner-summer.jpg', brand: 'Brand A', category: 'Apparel', lifecycle: 'Approved', commitStatus: 'Committed', skuCount: 4, lastModified: 'May 5, 2026', source: 'Upload' },
+      { id: 'a2', filename: 'product-shot-white-tee.png', brand: 'Brand B', category: 'Footwear', lifecycle: 'In Review', commitStatus: 'Staged', skuCount: 2, lastModified: 'May 4, 2026', source: 'Scraped' },
+      { id: 'a3', filename: 'lifestyle-beach.mp4', brand: 'Brand A', category: 'Accessories', lifecycle: 'Draft', commitStatus: 'Pending', skuCount: 0, lastModified: 'May 3, 2026', source: 'External' },
+      { id: 'a4', filename: 'campaign-main.psd', brand: 'Brand C', category: 'Apparel', lifecycle: 'Deprecated', commitStatus: 'Committed', skuCount: 1, lastModified: 'Apr 29, 2026', source: 'Upload' },
+      { id: 'a5', filename: 'lookbook-spring.pdf', brand: 'Brand B', category: 'Marketing', lifecycle: 'Approved', commitStatus: 'Committed', skuCount: 8, lastModified: 'Apr 28, 2026', source: 'Upload' },
+    ];
+
+    const FILTER_GROUPS = [
+      { label: 'Categories', values: ['Apparel', 'Footwear', 'Accessories', 'Marketing'] },
+      { label: 'Lifecycle Status', values: ['Draft', 'In Review', 'Approved', 'Deprecated'] },
+      { label: 'Commit Status', values: ['Committed', 'Staged', 'Pending'] },
+      { label: 'Source', values: ['Upload', 'Scraped', 'External'] },
+      { label: 'Brand', values: ['Brand A', 'Brand B', 'Brand C'] },
+    ];
+
+    // ── Theme ─────────────────────────────────────────────────────────────────
+    const theme = createTheme({
+      palette: {
+        mode: 'light',
+        primary:    { main: '#0D0D0D' },
+        secondary:  { main: '#6B7280' },
+        error:      { main: '#6B7280' },
+        warning:    { main: '#9CA3AF' },
+        info:       { main: '#6B7280' },
+        success:    { main: '#6B7280' },
+        background: { default: '#EAEAF0', paper: '#FFFFFF' },
+        text: { primary: '#0D0D0D', secondary: '#6B7280', disabled: '#CBD5E1' },
+        divider: '#E4E4E7',
+      },
+      shape: { borderRadius: 8 },
+      typography: {
+        fontFamily: 'Inter, sans-serif',
+        body1: { fontSize: '14px' },
+        body2: { fontSize: '14px' },
+        caption: { fontSize: '12px' },
+        overline: { fontSize: '12px', letterSpacing: '0.06em' },
+      },
+      shadows: Array(25).fill('none'),
+      components: {
+        MuiPaper:   { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E4E4E7' } } },
+        MuiCard:    { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E4E4E7' } } },
+        MuiAppBar:  { defaultProps: { elevation: 0 }, styleOverrides: { root: { borderBottom: '1px solid #E4E4E7', backgroundColor: '#FFFFFF' } } },
+        MuiButton:  { defaultProps: { disableElevation: true }, styleOverrides: { root: { borderRadius: '6px' } } },
+        MuiDialog:  { defaultProps: { elevation: 0 }, styleOverrides: { paper: { border: '1px solid #E4E4E7' } } },
+        MuiDrawer:  { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiPopover: { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiMenu:    { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiChip:    { styleOverrides: { root: { borderRadius: '4px' } } },
+        MuiOutlinedInput: { styleOverrides: { root: { borderRadius: '6px' } } },
+        MuiToggleButton:  { styleOverrides: { root: { borderRadius: '6px' } } },
+      },
+    });
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function lifecycleChip(status) {
+      const map = {
+        'Draft':      { bg: '#F1F5F9', color: '#6B7280' },
+        'In Review':  { bg: '#FEF9C3', color: '#854D0E' },
+        'Approved':   { bg: '#DCFCE7', color: '#166534' },
+        'Deprecated': { bg: '#FEE2E2', color: '#991B1B' },
+      };
+      const s = map[status] || { bg: '#F1F5F9', color: '#6B7280' };
+      return <Chip label={status} size="small" sx={{ bgcolor: s.bg, color: s.color, fontWeight: 500, fontSize: '12px' }} />;
+    }
+
+    function commitChip(status) {
+      const map = {
+        'Committed':  { bg: '#DCFCE7', color: '#166534' },
+        'Staged':     { bg: '#EFF6FF', color: '#1D4ED8' },
+        'Pending':    { bg: '#FEF9C3', color: '#854D0E' },
+      };
+      const s = map[status] || { bg: '#F1F5F9', color: '#6B7280' };
+      return (
+        <Chip
+          label={status}
+          size="small"
+          icon={<GitCommit width={14} height={14} strokeWidth={1.5} style={{ color: s.color }} />}
+          sx={{ bgcolor: s.bg, color: s.color, fontWeight: 500, fontSize: '12px',
+                '& .MuiChip-icon': { color: s.color } }}
+        />
+      );
+    }
+
+    function SectionLabel({ children }) {
+      return (
+        <Typography variant="caption" sx={{
+          color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
+          fontWeight: 600, fontSize: '11px', mb: 1, display: 'block'
+        }}>
+          {children}
+        </Typography>
+      );
+    }
+
+    function DefRow({ label, value }) {
+      return (
+        <Box sx={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 1, py: 0.5 }}>
+          <Typography variant="caption" sx={{ color: '#9CA3AF', fontWeight: 500 }}>{label}</Typography>
+          <Typography variant="caption" sx={{ color: '#374151' }}>{value}</Typography>
+        </Box>
+      );
+    }
+
+    // ── AppBar ─────────────────────────────────────────────────────────────────
+    // → ConnectUI: OrionAppBar | spacing.lg
+    function TopAppBar({ onUpload }) {
+      return (
+        <AppBar position="sticky" sx={{ top: 0, zIndex: 1200, color: '#0D0D0D' }}>
+          <Toolbar sx={{ px: 2, gap: 2, minHeight: '56px !important', height: 56 }}>
+            {/* ── Section: AppBar Logo + Title ─── */}
+            <Box sx={{ width: 32, height: 32, bgcolor: '#EAEAF0', borderRadius: '6px', border: '1px solid #E4E4E7', flexShrink: 0 }} />
+            <Typography sx={{ fontWeight: 600, fontSize: '15px', color: '#0D0D0D', whiteSpace: 'nowrap' }}>
+              CREATIVESPHERE
+            </Typography>
+            <Box sx={{ flex: 1 }} />
+            {/* ── Section: AppBar Breadcrumbs ─── */}
+            {/* → ConnectUI: ScopeBreadcrumbs | spacing.sm */}
+            <Breadcrumbs separator={<NavRight width={14} height={14} strokeWidth={1.5} style={{ color: '#9CA3AF' }} />} sx={{ fontSize: '13px' }}>
+              <Chip label="Org A" size="small" variant="outlined" clickable
+                icon={<Community width={14} height={14} strokeWidth={1.5} />}
+                sx={{ fontSize: '12px', color: '#374151', borderColor: '#E4E4E7' }} />
+              <Chip label="Brand B" size="small" variant="outlined" clickable
+                icon={<Building width={14} height={14} strokeWidth={1.5} />}
+                sx={{ fontSize: '12px', color: '#374151', borderColor: '#E4E4E7' }} />
+            </Breadcrumbs>
+            <Box sx={{ flex: 1 }} />
+            <IconButton size="small" aria-label="Account menu" sx={{ color: '#6B7280' }}>
+              <User width={20} height={20} strokeWidth={1.5} />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+      );
+    }
+
+    // ── SubToolbar ─────────────────────────────────────────────────────────────
+    // → ConnectUI: OrionSubToolbar | spacing.md
+    function SubToolbar({ currentView, onViewChange, onUpload, searchQuery, onSearchChange }) {
+      return (
+        <Box sx={{
+          position: 'sticky', top: 56, zIndex: 1100,
+          bgcolor: '#FFFFFF', borderBottom: '1px solid #E4E4E7',
+          px: 2, height: 48, display: 'flex', alignItems: 'center', gap: 2
+        }}>
+          {/* ── Section: OmniSearch ─── */}
+          {/* → ConnectUI: OrionSearchField | spacing.sm */}
+          <TextField
+            size="small"
+            placeholder="Search assets, tags, SKUs, brands…"
+            value={searchQuery}
+            onChange={e => onSearchChange(e.target.value)}
+            sx={{ minWidth: 360 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search width={16} height={16} strokeWidth={1.5} style={{ color: '#9CA3AF' }} />
+                </InputAdornment>
+              )
+            }}
+          />
+          <Box sx={{ flex: 1 }} />
+          {/* ── Section: ViewToggle ─── */}
+          {/* → ConnectUI: OrionViewToggle | spacing.xs */}
+          <ToggleButtonGroup size="small" exclusive value={currentView} onChange={(_, v) => v && onViewChange(v)}>
+            <ToggleButton value="library-table" aria-label="Table view">
+              <Table2Columns width={18} height={18} strokeWidth={1.5} />
+            </ToggleButton>
+            <ToggleButton value="library-tile" aria-label="Tile view">
+              <ViewGrid width={18} height={18} strokeWidth={1.5} />
+            </ToggleButton>
+          </ToggleButtonGroup>
+          {/* ── Section: SortControl ─── */}
+          <Button variant="outlined" size="small" startIcon={<Sort width={16} height={16} strokeWidth={1.5} />}
+            sx={{ color: '#374151', borderColor: '#E4E4E7', whiteSpace: 'nowrap' }}>
+            Sort: Last modified ↓
+          </Button>
+          {/* ── Section: UploadCTA ─── */}
+          <Button variant="contained" size="medium" startIcon={<Upload width={16} height={16} strokeWidth={1.5} />}
+            onClick={onUpload}
+            sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', '&:hover': { bgcolor: '#374151' } }}>
+            Upload
+          </Button>
+        </Box>
+      );
+    }
+
+    // ── Filter Sidebar ─────────────────────────────────────────────────────────
+    // → ConnectUI: FilterAccordion | spacing.lg
+    function FilterSidebar({ activeFilters, onFilterToggle }) {
+      return (
+        <Box sx={{
+          width: 260, flexShrink: 0, height: '100%', overflowY: 'auto',
+          bgcolor: '#FFFFFF', borderRight: '1px solid #E4E4E7'
+        }}>
+          <Box sx={{ p: 2, borderBottom: '1px solid #E4E4E7' }}>
+            <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#374151' }}>Filters</Typography>
+          </Box>
+          {FILTER_GROUPS.map((group) => (
+            <Accordion key={group.label} defaultExpanded disableGutters square elevation={0}
+              sx={{ border: 'none', borderBottom: '1px solid #E4E4E7', '&::before': { display: 'none' } }}>
+              <AccordionSummary
+                expandIcon={<NavArrowDown width={16} height={16} strokeWidth={1.5} style={{ color: '#6B7280' }} />}
+                sx={{ minHeight: 40, px: 2, py: 0, '& .MuiAccordionSummary-content': { my: 0 } }}>
+                <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>{group.label}</Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ px: 2, pb: 1.5, pt: 0 }}>
+                <FormGroup>
+                  {group.values.map(val => (
+                    <FormControlLabel key={val}
+                      control={
+                        <Checkbox size="small"
+                          checked={activeFilters.includes(val)}
+                          onChange={() => onFilterToggle(val)}
+                          sx={{ py: 0.25, color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' } }}
+                        />
+                      }
+                      label={<Typography sx={{ fontSize: '13px', color: '#374151' }}>{val}</Typography>}
+                      sx={{ mx: 0 }}
+                    />
+                  ))}
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Box>
+      );
+    }
+
+    // ── Active Filter Chips ────────────────────────────────────────────────────
+    function ActiveFilterChips({ activeFilters, onRemoveFilter }) {
+      if (!activeFilters.length) return null;
+      return (
+        <Box sx={{ px: 2, py: 1, borderBottom: '1px solid #E4E4E7', bgcolor: '#FFFFFF', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {activeFilters.map(f => (
+            <Chip key={f} label={f} size="small" variant="outlined"
+              onDelete={() => onRemoveFilter(f)}
+              sx={{ fontSize: '12px', borderColor: '#CBD5E1', color: '#374151' }}
+            />
+          ))}
+        </Box>
+      );
+    }
+
+    // ── Empty State ────────────────────────────────────────────────────────────
+    function EmptyState({ onClearFilters }) {
+      return (
+        <Stack alignItems="center" justifyContent="center" sx={{ py: 8, flex: 1, color: '#9CA3AF' }}>
+          <EmptyPage width={48} height={48} strokeWidth={1.5} style={{ color: '#CBD5E1', marginBottom: 16 }} />
+          <Typography sx={{ fontWeight: 600, fontSize: '15px', color: '#374151', mb: 1 }}>No assets found</Typography>
+          <Typography sx={{ fontSize: '13px', color: '#9CA3AF', mb: 2 }}>Try adjusting your filters or search query</Typography>
+          <Button variant="outlined" size="small" onClick={onClearFilters}
+            sx={{ borderColor: '#CBD5E1', color: '#374151' }}>
+            Clear filters
+          </Button>
+        </Stack>
+      );
+    }
+
+    // ── Selection Toolbar ──────────────────────────────────────────────────────
+    // → ConnectUI: SelectionToolbar | spacing.md
+    function SelectionToolbar({ count, onClear, onBulkAction }) {
+      if (!count) return null;
+      return (
+        <Box sx={{
+          position: 'sticky', top: 0, zIndex: 10,
+          bgcolor: 'rgba(29,78,216,0.08)', borderBottom: '1px solid #E4E4E7',
+          height: 44, display: 'flex', alignItems: 'center', px: 2, gap: 2
+        }}>
+          <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#1D4ED8' }}>{count} selected</Typography>
+          <Button variant="text" size="small" onClick={onClear} sx={{ color: '#6B7280', fontSize: '13px' }}>Clear</Button>
+          {/* ANTI-PATTERN[QO]: Bulk Actions onClick is intentionally unwired at wireframe stage.
+              — The bulk action picker is out of scope for this wireframe; wiring it would require
+                a full picker component not defined in the Component Plan.
+              — do not change */}
+          <Button variant="outlined" size="small" aria-label="Bulk actions (not yet wired)"
+            onClick={() => {}}
+            sx={{ ml: 'auto', borderColor: '#CBD5E1', color: '#374151', fontSize: '13px' }}>
+            Bulk actions
+          </Button>
+        </Box>
+      );
+    }
+
+    // ── Asset Table ────────────────────────────────────────────────────────────
+    // → ConnectUI: AssetDataTable | spacing.lg
+    function AssetTable({ assets, selectedAssets, onRowClick, onCheckboxToggle, showEmpty, onClearFilters }) {
+      const allSelected = assets.length > 0 && assets.every(a => selectedAssets.includes(a.id));
+      const someSelected = assets.some(a => selectedAssets.includes(a.id)) && !allSelected;
+
+      function handleSelectAll(e) {
+        if (e.target.checked) {
+          const allIds = assets.map(a => a.id);
+          onCheckboxToggle(null, allIds);
+        } else {
+          onCheckboxToggle(null, []);
+        }
+      }
+
+      return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <SelectionToolbar count={selectedAssets.length} onClear={() => onCheckboxToggle(null, [])} />
+          <TableContainer component={Paper} sx={{
+            flex: 1, border: 'none', borderRadius: 0,
+            '& .MuiPaper-root': { border: 'none' }
+          }}>
+            <Table stickyHeader size="small" sx={{ '& .MuiTableCell-root': { borderBottom: '1px solid #E4E4E7' } }}>
+              <TableHead>
+                <TableRow sx={{ '& .MuiTableCell-head': { bgcolor: '#F8F9FC', fontWeight: 600 } }}>
+                  <TableCell padding="checkbox" sx={{ width: 48 }}>
+                    <Checkbox size="small" indeterminate={someSelected} checked={allSelected}
+                      onChange={handleSelectAll}
+                      sx={{ color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' } }} />
+                  </TableCell>
+                  <TableCell sx={{ width: 60 }}></TableCell>
+                  <TableCell>
+                    <TableSortLabel active sx={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Filename
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell sx={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Brand</TableCell>
+                  <TableCell sx={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Category</TableCell>
+                  <TableCell sx={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Lifecycle</TableCell>
+                  <TableCell sx={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Commit</TableCell>
+                  <TableCell sx={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>SKUs</TableCell>
+                  <TableCell sx={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Modified</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {showEmpty ? (
+                  <TableRow>
+                    <TableCell colSpan={9} sx={{ border: 'none', p: 0 }}>
+                      <EmptyState onClearFilters={onClearFilters} />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  assets.map(asset => {
+                    const isSelected = selectedAssets.includes(asset.id);
+                    return (
+                      <TableRow key={asset.id}
+                        hover selected={isSelected}
+                        onClick={() => onRowClick(asset.id)}
+                        sx={{
+                          cursor: 'pointer',
+                          '&.Mui-selected': { bgcolor: 'rgba(29,78,216,0.08)' },
+                          '&.Mui-selected:hover': { bgcolor: 'rgba(29,78,216,0.08)' },
+                          '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' }
+                        }}>
+                        <TableCell padding="checkbox" onClick={e => { e.stopPropagation(); onCheckboxToggle(asset.id); }}>
+                          <Checkbox size="small" checked={isSelected}
+                            sx={{ color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' } }} />
+                        </TableCell>
+                        <TableCell sx={{ p: 1 }}>
+                          <Box sx={{
+                            width: 48, height: 48, bgcolor: '#F8F9FC', borderRadius: '4px',
+                            border: '1px solid #E4E4E7', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}>
+                            <MediaImagePlus width={20} height={20} strokeWidth={1.5} style={{ color: '#CBD5E1' }} />
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>{asset.filename}</Typography>
+                          <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>{asset.source}</Typography>
+                        </TableCell>
+                        <TableCell><Typography sx={{ fontSize: '13px', color: '#374151' }}>{asset.brand}</Typography></TableCell>
+                        <TableCell><Typography sx={{ fontSize: '13px', color: '#374151' }}>{asset.category}</Typography></TableCell>
+                        <TableCell>{lifecycleChip(asset.lifecycle)}</TableCell>
+                        <TableCell>{commitChip(asset.commitStatus)}</TableCell>
+                        <TableCell><Typography sx={{ fontSize: '13px', color: '#374151' }}>{asset.skuCount}</Typography></TableCell>
+                        <TableCell><Typography sx={{ fontSize: '13px', color: '#9CA3AF' }}>{asset.lastModified}</Typography></TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      );
+    }
+
+    // ── Asset Tile Grid ────────────────────────────────────────────────────────
+    // → ConnectUI: AssetTileGrid | spacing.lg
+    function AssetTileGrid({ assets, selectedAssets, onTileClick, onCheckboxToggle, showEmpty, onClearFilters }) {
+      return (
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <SelectionToolbar count={selectedAssets.length} onClear={() => onCheckboxToggle(null, [])} />
+          {showEmpty ? (
+            <EmptyState onClearFilters={onClearFilters} />
+          ) : (
+            <Box sx={{
+              p: 2,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+              gap: 2,
+              alignContent: 'start'
+            }}>
+              {assets.map(asset => {
+                const isSelected = selectedAssets.includes(asset.id);
+                return (
+                  <Card key={asset.id}
+                    onClick={() => onTileClick(asset.id)}
+                    sx={{
+                      cursor: 'pointer', position: 'relative',
+                      border: isSelected ? '2px solid #1D4ED8' : '1px solid #E4E4E7',
+                      '&:hover': { borderColor: '#CBD5E1' },
+                      transition: 'border-color 0.15s ease'
+                    }}>
+                    <Box sx={{
+                      width: '100%', height: 140, bgcolor: '#F8F9FC',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      borderBottom: '1px solid #E4E4E7'
+                    }}>
+                      <MediaImagePlus width={32} height={32} strokeWidth={1.5} style={{ color: '#CBD5E1' }} />
+                    </Box>
+                    <Box sx={{ position: 'absolute', top: 8, left: 8 }}
+                      onClick={e => { e.stopPropagation(); onCheckboxToggle(asset.id); }}>
+                      <Checkbox size="small" checked={isSelected}
+                        sx={{
+                          color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' },
+                          bgcolor: '#FFFFFF', borderRadius: '4px', p: 0.25
+                        }} />
+                    </Box>
+                    <CardContent sx={{ p: '10px !important' }}>
+                      <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D', mb: 0.5,
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {asset.filename}
+                      </Typography>
+                      <Stack direction="row" spacing={0.5} sx={{ mb: 1, flexWrap: 'wrap', gap: 0.5 }}>
+                        {lifecycleChip(asset.lifecycle)}
+                        {commitChip(asset.commitStatus)}
+                      </Stack>
+                      <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>
+                        {asset.brand} · {asset.skuCount} SKUs
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </Box>
+          )}
+        </Box>
+      );
+    }
+
+    // ── Pagination Footer ──────────────────────────────────────────────────────
+    // → ConnectUI: OrionPagination | spacing.md
+    function PaginationFooter() {
+      return (
+        <Box sx={{
+          position: 'sticky', bottom: 0, bgcolor: '#FFFFFF',
+          borderTop: '1px solid #E4E4E7', height: 48,
+          display: 'flex', alignItems: 'center', px: 2, gap: 2, flexShrink: 0
+        }}>
+          <Typography sx={{ fontSize: '13px', color: '#6B7280', whiteSpace: 'nowrap' }}>
+            Showing 1–50 of 1,247
+          </Typography>
+          <Box sx={{ flex: 1 }} />
+          <Typography sx={{ fontSize: '13px', color: '#6B7280' }}>Rows per page:</Typography>
+          <Select size="small" value={50} variant="outlined"
+            sx={{ fontSize: '13px', height: 32, '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }}>
+            <MenuItem value={25}>25</MenuItem>
+            <MenuItem value={50}>50</MenuItem>
+            <MenuItem value={100}>100</MenuItem>
+          </Select>
+          <Pagination count={25} page={1} size="small"
+            sx={{ '& .MuiPaginationItem-root': { fontSize: '13px', color: '#374151' } }} />
+        </Box>
+      );
+    }
+
+    // ── Asset Preview Drawer Content ───────────────────────────────────────────
+    // → ConnectUI: AssetPreviewDrawer | spacing.xl
+    function AssetPreviewContent({ assetId, assets, stagedChanges, onStage, onReviewCommit, onClose, onPrev, onNext }) {
+      const asset = assets.find(a => a.id === assetId) || assets[0];
+      const idx = assets.findIndex(a => a.id === assetId);
+
+      return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#FFFFFF' }}>
+          {/* Header */}
+          {/* → ConnectUI: DrawerHeader | spacing.sm */}
+          <Box sx={{
+            display: 'flex', alignItems: 'center', gap: 1, px: 2,
+            height: 48, borderBottom: '1px solid #E4E4E7', flexShrink: 0
+          }}>
+            <IconButton size="small" onClick={onPrev} disabled={idx <= 0} aria-label="Previous asset">
+              <NavArrowLeft width={18} height={18} strokeWidth={1.5} />
+            </IconButton>
+            <IconButton size="small" onClick={onNext} disabled={idx >= assets.length - 1} aria-label="Next asset">
+              <NavArrowRight width={18} height={18} strokeWidth={1.5} />
+            </IconButton>
+            <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D',
+              flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', mx: 1 }}>
+              {asset.filename}
+            </Typography>
+            <IconButton size="small" onClick={onClose} aria-label="Close preview">
+              <Xmark width={18} height={18} strokeWidth={1.5} />
+            </IconButton>
+          </Box>
+
+          {/* Scrollable content */}
+          <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+            {/* Preview Area */}
+            <Box sx={{
+              width: '100%', height: 200, bgcolor: '#F8F9FC', borderRadius: '6px',
+              border: '1px solid #E4E4E7', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', mb: 2
+            }}>
+              <MediaImagePlus width={48} height={48} strokeWidth={1.5} style={{ color: '#CBD5E1' }} />
+            </Box>
+
+            {/* Identity */}
+            <Box sx={{ mb: 2 }}>
+              <SectionLabel>Identity</SectionLabel>
+              <DefRow label="Filename" value={asset.filename} />
+              <DefRow label="Source" value={asset.source} />
+              <DefRow label="Created" value="Apr 15, 2026" />
+              <DefRow label="Modified" value={asset.lastModified} />
+            </Box>
+
+            {/* Scope */}
+            <Box sx={{ mb: 2, pt: 1.5, borderTop: '1px solid #E4E4E7' }}>
+              <SectionLabel>Scope</SectionLabel>
+              <DefRow label="Org / Account" value="Org A" />
+              <DefRow label="Brand / Site" value={asset.brand} />
+            </Box>
+
+            {/* Classification */}
+            {/* → ConnectUI: ClassificationSection | spacing.sm */}
+            <Box sx={{ mb: 2, pt: 1.5, borderTop: '1px solid #E4E4E7' }}>
+              <SectionLabel>Classification</SectionLabel>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <Folder width={14} height={14} strokeWidth={1.5} style={{ color: '#9CA3AF' }} />
+                <Typography sx={{ fontSize: '13px', color: '#374151' }}>{asset.category}</Typography>
+              </Box>
+              <Stack direction="row" flexWrap="wrap" gap={0.5} sx={{ mb: 1 }}>
+                {['summer-2026', 'hero', 'campaign'].map(tag => (
+                  <Chip key={tag} label={tag} size="small" onDelete={() => {}}
+                    sx={{ fontSize: '12px', bgcolor: '#F8F9FC', color: '#374151', borderRadius: '4px' }} />
+                ))}
+                <Chip label="Add tag" size="small" variant="outlined" clickable
+                  icon={<Plus width={12} height={12} strokeWidth={1.5} />}
+                  sx={{ fontSize: '12px', borderColor: '#CBD5E1', color: '#6B7280' }} />
+              </Stack>
+            </Box>
+
+            {/* Associations */}
+            <Box sx={{ mb: 2, pt: 1.5, borderTop: '1px solid #E4E4E7' }}>
+              <SectionLabel>Associated SKUs ({asset.skuCount})</SectionLabel>
+              <List dense disablePadding>
+                {asset.skuCount > 0 ? (
+                  <ListItem disablePadding sx={{ py: 0.5 }}>
+                    <Package width={14} height={14} strokeWidth={1.5} style={{ color: '#9CA3AF', marginRight: 8, flexShrink: 0 }} />
+                    <Typography sx={{ fontSize: '13px', color: '#374151', flex: 1 }}>SKU-{asset.id.toUpperCase()}-001</Typography>
+                    <NavRight width={14} height={14} strokeWidth={1.5} style={{ color: '#9CA3AF' }} />
+                  </ListItem>
+                ) : (
+                  <Typography sx={{ fontSize: '13px', color: '#9CA3AF' }}>No SKUs linked</Typography>
+                )}
+              </List>
+              <Button variant="text" size="small" startIcon={<Plus width={14} height={14} strokeWidth={1.5} />}
+                sx={{ mt: 0.5, fontSize: '13px', color: '#6B7280', p: 0 }}>
+                Add association
+              </Button>
+            </Box>
+
+            {/* Lifecycle */}
+            {/* → ConnectUI: LifecycleSection | spacing.sm */}
+            <Box sx={{ mb: 2, pt: 1.5, borderTop: '1px solid #E4E4E7' }}>
+              <SectionLabel>Lifecycle</SectionLabel>
+              <Stack direction="row" alignItems="center" gap={1}>
+                <Select size="small" value={asset.lifecycle} variant="outlined"
+                  sx={{ fontSize: '13px', height: 32, '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }}>
+                  <MenuItem value="Draft">Draft</MenuItem>
+                  <MenuItem value="In Review">In Review</MenuItem>
+                  <MenuItem value="Approved">Approved</MenuItem>
+                  <MenuItem value="Deprecated">Deprecated</MenuItem>
+                </Select>
+                {stagedChanges && (
+                  <Chip label="Staged" size="small"
+                    sx={{ bgcolor: '#EFF6FF', color: '#1D4ED8', borderRadius: '4px',
+                          fontSize: '12px', fontWeight: 500, height: 20, ml: 1 }} />
+                )}
+              </Stack>
+            </Box>
+
+            {/* Commit */}
+            <Box sx={{ mb: 2, pt: 1.5, borderTop: '1px solid #E4E4E7' }}>
+              <SectionLabel>Commit</SectionLabel>
+              <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 0.5 }}>
+                {commitChip(asset.commitStatus)}
+              </Stack>
+              <Stack direction="row" alignItems="center" gap={1}>
+                <GitCommit width={14} height={14} strokeWidth={1.5} style={{ color: '#9CA3AF' }} />
+                <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>a3f2c1 · J. Smith · May 3, 2026</Typography>
+              </Stack>
+            </Box>
+
+            {/* History */}
+            <Box sx={{ mb: 2, pt: 1.5, borderTop: '1px solid #E4E4E7' }}>
+              <SectionLabel>History</SectionLabel>
+              <List dense disablePadding>
+                {[
+                  { author: 'J. Smith', action: 'Updated lifecycle to Approved', time: 'May 3, 2026' },
+                  { author: 'M. Chen', action: 'Added tag "summer-2026"', time: 'Apr 28, 2026' },
+                ].map((h, i) => (
+                  <ListItem key={i} disablePadding sx={{ py: 0.5, gap: 1, alignItems: 'flex-start' }}>
+                    <Avatar sx={{ width: 24, height: 24, fontSize: '11px', bgcolor: '#E4E4E7', color: '#374151', flexShrink: 0, mt: 0.25 }}>
+                      {h.author[0]}
+                    </Avatar>
+                    <Box>
+                      <Typography sx={{ fontSize: '12px', color: '#374151' }}>{h.action}</Typography>
+                      <Typography sx={{ fontSize: '11px', color: '#9CA3AF' }}>{h.author} · {h.time}</Typography>
+                    </Box>
+                  </ListItem>
+                ))}
+              </List>
+              <Button variant="text" size="small" sx={{ mt: 0.5, fontSize: '13px', color: '#6B7280', p: 0 }}>
+                View all history
+              </Button>
+            </Box>
+
+            {/* Future Fields */}
+            <Accordion disableGutters square elevation={0}
+              sx={{ border: '1px solid #E4E4E7', borderRadius: '6px !important', mt: 1, '&::before': { display: 'none' } }}>
+              <AccordionSummary
+                expandIcon={<NavArrowDown width={16} height={16} strokeWidth={1.5} style={{ color: '#6B7280' }} />}
+                sx={{ minHeight: 40, px: 2, py: 0, '& .MuiAccordionSummary-content': { my: 0 } }}>
+                <Typography sx={{ fontSize: '13px', color: '#9CA3AF' }}>Future fields</Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ px: 2, pb: 1.5 }}>
+                <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>Generation seeds, prompts, recipe inputs</Typography>
+              </AccordionDetails>
+            </Accordion>
+          </Box>
+
+          {/* Footer Actions */}
+          {/* → ConnectUI: DrawerFooterActions | spacing.md */}
+          <Box sx={{
+            position: 'sticky', bottom: 0, borderTop: '1px solid #E4E4E7',
+            height: 64, display: 'flex', alignItems: 'center', px: 2, gap: 1.5,
+            bgcolor: '#FFFFFF', flexShrink: 0
+          }}>
+            <Button variant="outlined" size="small" startIcon={<CloudUpload width={16} height={16} strokeWidth={1.5} />}
+              onClick={onStage}
+              sx={{ borderColor: '#CBD5E1', color: '#374151' }}>
+              Stage change
+            </Button>
+            <Button variant="contained" size="small"
+              disabled={!stagedChanges}
+              onClick={onReviewCommit}
+              sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', ml: 'auto',
+                    '&:hover': { bgcolor: '#374151' },
+                    '&.Mui-disabled': { bgcolor: '#E4E4E7', color: '#9CA3AF' } }}>
+              Review &amp; commit
+            </Button>
+          </Box>
+        </Box>
+      );
+    }
+
+    // ── Selection Sidebar Content ──────────────────────────────────────────────
+    // → ConnectUI: SelectionSidebarDrawer | spacing.xl
+    function SelectionSidebarContent({ selectedAssets, assets, pendingChangesCount, onStage, onReviewCommit, onClear }) {
+      const selectedData = assets.filter(a => selectedAssets.includes(a.id));
+      const brands = [...new Set(selectedData.map(a => a.brand))];
+      const categories = [...new Set(selectedData.map(a => a.category))];
+
+      return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#FFFFFF' }}>
+          {/* Header */}
+          <Box sx={{
+            display: 'flex', alignItems: 'center', px: 2,
+            height: 48, borderBottom: '1px solid #E4E4E7', flexShrink: 0
+          }}>
+            <Typography sx={{ fontSize: '14px', fontWeight: 500, color: '#0D0D0D' }}>
+              {selectedAssets.length} selected
+            </Typography>
+            <Box sx={{ flex: 1 }} />
+            <Button variant="text" size="small" onClick={onClear} sx={{ color: '#6B7280', fontSize: '13px' }}>
+              Clear selection
+            </Button>
+          </Box>
+
+          {/* Scrollable content */}
+          <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+            {/* Summary */}
+            <Box sx={{ mb: 2 }}>
+              <Typography sx={{ fontSize: '13px', color: '#6B7280', mb: 1 }}>
+                From {brands.length} brand{brands.length !== 1 ? 's' : ''} · {categories.length} categor{categories.length !== 1 ? 'ies' : 'y'}
+              </Typography>
+              <Stack direction="row" flexWrap="wrap" gap={0.5}>
+                {selectedData.slice(0, 4).map(a => (
+                  <Chip key={a.id} label={a.filename.split('.')[0]} size="small"
+                    sx={{ fontSize: '11px', bgcolor: '#F8F9FC', color: '#6B7280', maxWidth: 120,
+                          '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' } }} />
+                ))}
+                {selectedData.length > 4 && (
+                  <Chip label={`+${selectedData.length - 4} more`} size="small"
+                    sx={{ fontSize: '11px', bgcolor: '#EFF6FF', color: '#1D4ED8' }} />
+                )}
+              </Stack>
+            </Box>
+
+            {/* Mixed-value notice — Box replacement (Component Constraint §1) */}
+            {/* → ConnectUI: WarningNotice | spacing.sm */}
+            <Box sx={{
+              display: 'flex', alignItems: 'flex-start', gap: 1, p: '10px 14px',
+              border: '1px solid #92400E', borderRadius: '6px',
+              bgcolor: 'rgba(146,64,14,0.08)', color: '#92400E', mb: 2
+            }}>
+              <WarningCircle width={16} height={16} strokeWidth={1.5} style={{ flexShrink: 0, marginTop: 2 }} />
+              <Typography variant="body2" sx={{ color: '#92400E', fontSize: '13px' }}>
+                3 fields have mixed values across selection
+              </Typography>
+            </Box>
+
+            {/* Batch edit — Category */}
+            {/* → ConnectUI: BatchEditField | spacing.sm */}
+            <Box sx={{ mb: 2 }}>
+              <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.75 }}>Category</Typography>
+              <Select size="small" value="" displayEmpty fullWidth
+                sx={{ fontSize: '13px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }}>
+                <MenuItem value="" disabled sx={{ color: '#9CA3AF' }}>Mixed</MenuItem>
+                <MenuItem value="Apparel">Apparel</MenuItem>
+                <MenuItem value="Footwear">Footwear</MenuItem>
+                <MenuItem value="Accessories">Accessories</MenuItem>
+                <MenuItem value="Marketing">Marketing</MenuItem>
+              </Select>
+            </Box>
+
+            {/* Batch edit — Tags */}
+            <Box sx={{ mb: 2 }}>
+              <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.75 }}>Tags</Typography>
+              <Stack direction="row" flexWrap="wrap" gap={0.5} sx={{ mb: 0.5 }}>
+                {['campaign', 'hero'].map(tag => (
+                  <Chip key={tag} label={tag} size="small" onDelete={() => {}}
+                    sx={{ fontSize: '12px', bgcolor: '#F8F9FC', color: '#374151' }} />
+                ))}
+                <TextField size="small" placeholder="Add tag…" sx={{ width: 100, '& .MuiInputBase-input': { py: 0.5, fontSize: '12px' } }} />
+              </Stack>
+              <Typography sx={{ fontSize: '11px', color: '#9CA3AF' }}>Showing shared tags only</Typography>
+            </Box>
+
+            {/* Batch edit — Lifecycle */}
+            <Box sx={{ mb: 2 }}>
+              <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.75 }}>Lifecycle</Typography>
+              <Select size="small" value="" displayEmpty fullWidth
+                sx={{ fontSize: '13px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }}>
+                <MenuItem value="" disabled sx={{ color: '#9CA3AF' }}>Mixed</MenuItem>
+                <MenuItem value="Draft">Draft</MenuItem>
+                <MenuItem value="In Review">In Review</MenuItem>
+                <MenuItem value="Approved">Approved</MenuItem>
+                <MenuItem value="Deprecated">Deprecated</MenuItem>
+              </Select>
+            </Box>
+
+            {/* Batch edit — SKU */}
+            <Box sx={{ mb: 2 }}>
+              <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.75 }}>SKU Associations</Typography>
+              <Button variant="outlined" size="small" fullWidth startIcon={<Package width={14} height={14} strokeWidth={1.5} />}
+                sx={{ borderColor: '#CBD5E1', color: '#374151', fontSize: '13px' }}>
+                Link {selectedAssets.length} assets to SKU…
+              </Button>
+            </Box>
+
+            {/* Pending changes */}
+            <Box sx={{ mb: 2, pt: 1.5, borderTop: '1px solid #E4E4E7' }}>
+              <SectionLabel>Pending changes ({pendingChangesCount})</SectionLabel>
+              {pendingChangesCount > 0 ? (
+                <List dense disablePadding>
+                  {[{ field: 'Lifecycle', from: 'Draft', to: 'Approved' }].map((c, i) => (
+                    <ListItem key={i} disablePadding sx={{ py: 0.75 }}>
+                      <Stack direction="row" alignItems="center" gap={1}>
+                        <Typography sx={{ fontSize: '12px', color: '#374151', fontWeight: 500 }}>{c.field}</Typography>
+                        <Typography sx={{ fontSize: '12px', color: '#9CA3AF', textDecoration: 'line-through' }}>{c.from}</Typography>
+                        <ArrowRight width={12} height={12} strokeWidth={1.5} style={{ color: '#9CA3AF' }} />
+                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#0D0D0D' }}>{c.to}</Typography>
+                      </Stack>
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography sx={{ fontSize: '13px', color: '#9CA3AF' }}>No staged changes yet</Typography>
+              )}
+            </Box>
+
+            {/* Commit message */}
+            <Box sx={{ mb: 2 }}>
+              <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.75 }}>Commit message</Typography>
+              <TextField multiline rows={2} fullWidth size="small"
+                placeholder="Optional message…"
+                sx={{ '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }} />
+            </Box>
+          </Box>
+
+          {/* Footer */}
+          <Box sx={{
+            position: 'sticky', bottom: 0, borderTop: '1px solid #E4E4E7',
+            height: 64, display: 'flex', alignItems: 'center', px: 2, gap: 1.5,
+            bgcolor: '#FFFFFF', flexShrink: 0
+          }}>
+            <Button variant="outlined" size="small" startIcon={<CloudUpload width={16} height={16} strokeWidth={1.5} />}
+              onClick={onStage}
+              sx={{ borderColor: '#CBD5E1', color: '#374151' }}>
+              Stage all
+            </Button>
+            <Button variant="contained" size="small"
+              disabled={pendingChangesCount === 0}
+              onClick={onReviewCommit}
+              sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', ml: 'auto',
+                    '&:hover': { bgcolor: '#374151' },
+                    '&.Mui-disabled': { bgcolor: '#E4E4E7', color: '#9CA3AF' } }}>
+              Review &amp; commit
+            </Button>
+          </Box>
+        </Box>
+      );
+    }
+
+    // ── Upload Modal ───────────────────────────────────────────────────────────
+    // → ConnectUI: UploadDialog | spacing.xl
+    function UploadModal({ open, onClose, onUpload }) {
+      const [files, setFiles] = React.useState([
+        { name: 'product-hero-v2.jpg', size: '2.4 MB' },
+        { name: 'banner-fall-campaign.png', size: '1.8 MB' },
+        { name: 'lookbook-Q3.pdf', size: '5.2 MB' },
+      ]);
+      const [overridePerFile, setOverridePerFile] = React.useState(false);
+
+      function removeFile(idx) {
+        setFiles(f => f.filter((_, i) => i !== idx));
+      }
+
+      return (
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+          <DialogTitle sx={{ display: 'flex', alignItems: 'center', px: 3, py: 2, borderBottom: '1px solid #E4E4E7' }}>
+            <Typography sx={{ fontWeight: 600, fontSize: '16px', color: '#0D0D0D', flex: 1 }}>Upload assets</Typography>
+            <IconButton size="small" onClick={onClose} aria-label="Close upload modal">
+              <Xmark width={18} height={18} strokeWidth={1.5} />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ p: 3 }}>
+            {/* Context inheritance notice — Box replacement (Component Constraint §1-B) */}
+            {/* → ConnectUI: ContextInheritanceNotice | spacing.sm */}
+            <Box sx={{
+              display: 'flex', alignItems: 'flex-start', gap: 1, p: '10px 14px',
+              border: '1px solid #1D4ED8', borderRadius: '6px',
+              bgcolor: 'rgba(29,78,216,0.08)', color: '#1D4ED8', mb: 2.5
+            }}>
+              <InfoCircle width={16} height={16} strokeWidth={1.5} style={{ flexShrink: 0, marginTop: 2 }} />
+              <Typography variant="body2" sx={{ color: '#1D4ED8', fontSize: '13px' }}>
+                Uploads will land in: Brand A · Category Apparel
+              </Typography>
+            </Box>
+
+            {/* Drop zone */}
+            {/* → ConnectUI: DropZone | spacing.lg */}
+            <Box sx={{
+              border: '2px dashed #CBD5E1', borderRadius: '8px', height: 160,
+              bgcolor: '#F8F9FC', display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+              mb: 2.5, transition: 'border-color 0.15s ease',
+              '&:hover': { borderColor: '#0D0D0D' }
+            }}>
+              <Upload width={48} height={48} strokeWidth={1.5} style={{ color: '#CBD5E1', marginBottom: 12 }} />
+              <Typography sx={{ fontSize: '14px', fontWeight: 500, color: '#374151' }}>Drop files or click to browse</Typography>
+              <Typography sx={{ fontSize: '12px', color: '#9CA3AF', mt: 0.5 }}>Up to 50 at once</Typography>
+            </Box>
+
+            {/* File list */}
+            {/* → ConnectUI: UploadFileList | spacing.sm */}
+            {files.length > 0 && (
+              <List sx={{ maxHeight: 240, overflowY: 'auto', border: '1px solid #E4E4E7', borderRadius: '6px', mb: 2.5, p: 0 }}>
+                {files.map((f, i) => (
+                  <ListItem key={i} divider={i < files.length - 1}
+                    secondaryAction={
+                      <IconButton size="small" edge="end" onClick={() => removeFile(i)} aria-label="Remove file">
+                        <Xmark width={16} height={16} strokeWidth={1.5} />
+                      </IconButton>
+                    }
+                    sx={{ px: 2, py: 1 }}>
+                    <Box sx={{ width: 32, height: 32, bgcolor: '#F8F9FC', borderRadius: '4px', border: '1px solid #E4E4E7',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', mr: 1.5, flexShrink: 0 }}>
+                      <MediaImagePlus width={16} height={16} strokeWidth={1.5} style={{ color: '#CBD5E1' }} />
+                    </Box>
+                    <ListItemText
+                      primary={<Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>{f.name}</Typography>}
+                      secondary={<Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>{f.size}</Typography>}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+
+            {/* Shared metadata */}
+            {/* → ConnectUI: SharedMetadataBlock | spacing.md */}
+            <Box sx={{ mb: 2.5 }}>
+              <SectionLabel>Apply to all</SectionLabel>
+              <Stack spacing={1.5}>
+                <Box>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.5 }}>Category</Typography>
+                  <Select size="small" value="Apparel" fullWidth
+                    sx={{ fontSize: '13px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }}>
+                    <MenuItem value="Apparel">Apparel</MenuItem>
+                    <MenuItem value="Footwear">Footwear</MenuItem>
+                    <MenuItem value="Accessories">Accessories</MenuItem>
+                  </Select>
+                </Box>
+                <Box>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.5 }}>Tags</Typography>
+                  <Stack direction="row" flexWrap="wrap" gap={0.5}>
+                    {['seasonal', 'hero'].map(tag => (
+                      <Chip key={tag} label={tag} size="small" onDelete={() => {}}
+                        sx={{ fontSize: '12px', bgcolor: '#F8F9FC', color: '#374151' }} />
+                    ))}
+                    <TextField size="small" placeholder="Add tag…" sx={{ width: 100, '& .MuiInputBase-input': { py: 0.5, fontSize: '12px' } }} />
+                  </Stack>
+                </Box>
+                <Box>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.5 }}>Initial lifecycle</Typography>
+                  <Select size="small" value="Draft" fullWidth
+                    sx={{ fontSize: '13px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }}>
+                    <MenuItem value="Draft">Draft</MenuItem>
+                    <MenuItem value="In Review">In Review</MenuItem>
+                  </Select>
+                </Box>
+              </Stack>
+            </Box>
+
+            {/* Per-asset override */}
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Switch checked={overridePerFile} onChange={e => setOverridePerFile(e.target.checked)} size="small" />
+              <Typography sx={{ fontSize: '13px', color: '#374151' }}>Override per file</Typography>
+            </Stack>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, py: 2, borderTop: '1px solid #E4E4E7', gap: 1 }}>
+            <Typography sx={{ fontSize: '13px', color: '#6B7280', flex: 1 }}>
+              Will land in: Brand A → Apparel
+            </Typography>
+            <Button variant="outlined" onClick={onClose} sx={{ borderColor: '#CBD5E1', color: '#374151' }}>Cancel</Button>
+            <Button variant="contained" onClick={onUpload} disabled={files.length === 0}
+              sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', '&:hover': { bgcolor: '#374151' },
+                    '&.Mui-disabled': { bgcolor: '#E4E4E7', color: '#9CA3AF' } }}>
+              Upload {files.length} file{files.length !== 1 ? 's' : ''}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      );
+    }
+
+    // ── Commit History Modal ───────────────────────────────────────────────────
+    // → ConnectUI: CommitHistoryDialog | spacing.xl
+    function CommitHistoryModal({ open, onClose, onCommit, pendingChangesCount, commitHistoryTab, onTabChange }) {
+      const PENDING_ROWS = [
+        { asset: 'hero-banner-summer.jpg', field: 'Lifecycle', before: 'Draft', after: 'Approved' },
+        { asset: 'product-shot-white-tee.png', field: 'Category', before: 'Footwear', after: 'Apparel' },
+        { asset: 'lifestyle-beach.mp4', field: 'Tags', before: '—', after: '+summer-2026' },
+        { asset: 'campaign-main.psd', field: 'Lifecycle', before: 'In Review', after: 'Approved' },
+      ];
+      const HISTORY_ROWS = [
+        { initials: 'JS', author: 'J. Smith', action: 'Updated 3 assets — lifecycle to Approved', time: 'May 3, 2026 · 14:22', hash: 'a3f2c1e', count: 3 },
+        { initials: 'MC', author: 'M. Chen', action: 'Batch-tagged 12 assets with "summer-2026"', time: 'Apr 28, 2026 · 09:15', hash: 'b8d4f2a', count: 12 },
+        { initials: 'JS', author: 'J. Smith', action: 'Initial upload of 5 assets', time: 'Apr 15, 2026 · 11:03', hash: 'c1e7d9b', count: 5 },
+      ];
+
+      return (
+        <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
+          <DialogTitle sx={{ display: 'flex', alignItems: 'center', px: 3, py: 0, borderBottom: '1px solid #E4E4E7', minHeight: 56 }}>
+            {/* → ConnectUI: CommitHistoryTabs | spacing.sm */}
+            <Tabs value={commitHistoryTab} onChange={(_, v) => onTabChange(v)}
+              sx={{ flex: 1, '& .MuiTab-root': { fontSize: '13px', fontWeight: 500, minHeight: 56, textTransform: 'none' } }}>
+              <Tab label={`Pending changes (${pendingChangesCount})`} />
+              <Tab label="History" />
+            </Tabs>
+            <IconButton size="small" onClick={onClose} aria-label="Close commit modal">
+              <Xmark width={18} height={18} strokeWidth={1.5} />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent sx={{ p: 0 }}>
+            {/* Pending tab */}
+            {commitHistoryTab === 0 && (
+              <Box sx={{ p: 3 }}>
+                {/* Before/after diff table */}
+                {/* → ConnectUI: PendingChangesTable | spacing.md */}
+                <TableContainer sx={{ maxHeight: 'calc(100vh - 320px)', border: '1px solid #E4E4E7', borderRadius: '6px', mb: 2.5 }}>
+                  <Table stickyHeader size="small">
+                    <TableHead>
+                      <TableRow sx={{ '& .MuiTableCell-head': { bgcolor: '#F8F9FC' } }}>
+                        {['Asset', 'Field', 'Before', 'After'].map(col => (
+                          <TableCell key={col} sx={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            {col}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {PENDING_ROWS.map((row, i) => (
+                        <TableRow key={i} sx={{ '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' } }}>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151' }}>{row.asset}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>{row.field}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#9CA3AF', textDecoration: 'line-through' }}>{row.before}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Stack direction="row" alignItems="center" gap={0.75}>
+                              <ArrowRight width={14} height={14} strokeWidth={1.5} style={{ color: '#9CA3AF', flexShrink: 0 }} />
+                              <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#0D0D0D' }}>{row.after}</Typography>
+                            </Stack>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Box>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#374151', mb: 0.75 }}>Commit message (optional)</Typography>
+                  <TextField multiline rows={2} fullWidth size="small"
+                    placeholder="Describe what you changed and why…"
+                    sx={{ '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }} />
+                </Box>
+              </Box>
+            )}
+
+            {/* History tab */}
+            {commitHistoryTab === 1 && (
+              <Box sx={{ p: 3 }}>
+                {/* History filters */}
+                <Stack direction="row" spacing={1.5} sx={{ mb: 2 }}>
+                  <TextField size="small" placeholder="Search history…" sx={{ flex: 1 }}
+                    InputProps={{ startAdornment: <InputAdornment position="start"><Search width={14} height={14} strokeWidth={1.5} style={{ color: '#9CA3AF' }} /></InputAdornment> }} />
+                  <Select size="small" value="all" sx={{ minWidth: 140, fontSize: '13px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }}>
+                    <MenuItem value="all">All dates</MenuItem>
+                    <MenuItem value="7d">Last 7 days</MenuItem>
+                    <MenuItem value="30d">Last 30 days</MenuItem>
+                  </Select>
+                  <Select size="small" value="all" sx={{ minWidth: 140, fontSize: '13px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' } }}>
+                    <MenuItem value="all">All authors</MenuItem>
+                    <MenuItem value="js">J. Smith</MenuItem>
+                    <MenuItem value="mc">M. Chen</MenuItem>
+                  </Select>
+                </Stack>
+                {/* History list */}
+                {/* → ConnectUI: CommitHistoryList | spacing.md */}
+                <List disablePadding sx={{ border: '1px solid #E4E4E7', borderRadius: '6px' }}>
+                  {HISTORY_ROWS.map((row, i) => (
+                    <ListItem key={i} divider={i < HISTORY_ROWS.length - 1} sx={{ px: 2, py: 1.5, alignItems: 'flex-start', gap: 1.5 }}>
+                      <Avatar sx={{ width: 32, height: 32, fontSize: '12px', fontWeight: 600, bgcolor: '#E4E4E7', color: '#374151', flexShrink: 0 }}>
+                        {row.initials}
+                      </Avatar>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D', mb: 0.25 }}>{row.action}</Typography>
+                        <Typography sx={{ fontSize: '12px', color: '#9CA3AF', mb: 0.5 }}>{row.author} · {row.time} · {row.hash}</Typography>
+                        <Chip label={`${row.count} changes`} size="small"
+                          sx={{ fontSize: '11px', bgcolor: '#F8F9FC', color: '#6B7280' }} />
+                      </Box>
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            )}
+          </DialogContent>
+
+          <DialogActions sx={{ px: 3, py: 2, borderTop: '1px solid #E4E4E7', gap: 1 }}>
+            <Button variant="outlined" onClick={onClose} sx={{ borderColor: '#CBD5E1', color: '#374151' }}>Cancel</Button>
+            {/* Commit button hidden on History tab (Component Constraint §6) */}
+            {commitHistoryTab === 0 ? (
+              <Button variant="contained" onClick={onCommit} disabled={pendingChangesCount === 0}
+                sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', '&:hover': { bgcolor: '#374151' },
+                      '&.Mui-disabled': { bgcolor: '#E4E4E7', color: '#9CA3AF' } }}>
+                Commit {pendingChangesCount} {pendingChangesCount === 1 ? 'change' : 'changes'}
+              </Button>
+            ) : (
+              <Box sx={{ width: 160 }} /> /* spacer — preserves DialogActions height on History tab */
+            )}
+          </DialogActions>
+        </Dialog>
+      );
+    }
+
+    // ── App Root ───────────────────────────────────────────────────────────────
+    function App() {
+      // State Architecture — 11 variables per brief
+      const [currentView, setCurrentView]           = React.useState('library-table');
+      const [activeModal, setActiveModal]           = React.useState(null);
+      const [selectedAssets, setSelectedAssets]     = React.useState([]);
+      const [previewAssetId, setPreviewAssetId]     = React.useState(null);
+      const [stagedChanges, setStagedChanges]       = React.useState(false);
+      const [pendingChangesCount, setPendingChangesCount] = React.useState(0);
+      const [commitHistoryTab, setCommitHistoryTab] = React.useState(0);
+      const [activeFilters, setActiveFilters]       = React.useState([]);
+      const [searchQuery, setSearchQuery]           = React.useState('');
+      const [previousView, setPreviousView]         = React.useState('library-table');
+      const [toastMessage, setToastMessage]         = React.useState('');
+
+      // Derived right-drawer priority rule — never set directly
+      const rightDrawer =
+        selectedAssets.length >= 2 ? 'selection-sidebar'
+        : selectedAssets.length === 1 ? 'asset-preview'
+        : null;
+
+      // Empty state trigger: selecting 3+ filters simulates zero results (wireframe demo)
+      const showEmptyState = activeFilters.length >= 3;
+
+      // ── Handlers ──────────────────────────────────────────────────────────
+      function handleRowClick(id) {
+        setSelectedAssets([id]);
+        setPreviewAssetId(id);
+      }
+
+      function handleCheckboxToggle(id, replaceWith) {
+        if (replaceWith !== undefined) {
+          // Select-all / clear-all
+          setSelectedAssets(replaceWith);
+          if (replaceWith.length === 1) setPreviewAssetId(replaceWith[0]);
+          else if (replaceWith.length === 0) setPreviewAssetId(null);
+        } else {
+          setSelectedAssets(prev => {
+            const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+            if (next.length === 0) setPreviewAssetId(null);
+            else if (next.length === 1) setPreviewAssetId(next[0]);
+            return next;
+          });
+        }
+      }
+
+      function handleClosePreview() {
+        setSelectedAssets([]);
+        setPreviewAssetId(null);
+      }
+
+      function handlePrevAsset() {
+        const idx = STUB_ASSETS.findIndex(a => a.id === previewAssetId);
+        if (idx > 0) {
+          const prev = STUB_ASSETS[idx - 1].id;
+          setPreviewAssetId(prev);
+          setSelectedAssets([prev]);
+        }
+      }
+
+      function handleNextAsset() {
+        const idx = STUB_ASSETS.findIndex(a => a.id === previewAssetId);
+        if (idx < STUB_ASSETS.length - 1) {
+          const next = STUB_ASSETS[idx + 1].id;
+          setPreviewAssetId(next);
+          setSelectedAssets([next]);
+        }
+      }
+
+      function handleViewChange(view) {
+        setCurrentView(view);
+      }
+
+      function handleFilterToggle(value) {
+        setActiveFilters(prev =>
+          prev.includes(value) ? prev.filter(x => x !== value) : [...prev, value]
+        );
+      }
+
+      function handleRemoveFilter(value) {
+        setActiveFilters(prev => prev.filter(x => x !== value));
+      }
+
+      function handleOpenUpload() {
+        setPreviousView(currentView);
+        setActiveModal('upload');
+      }
+
+      function handleUploadConfirm() {
+        setActiveModal(null);
+        setToastMessage('Assets uploaded');
+      }
+
+      function handleReviewCommit() {
+        setActiveModal('commit-history');
+      }
+
+      function handleCommit() {
+        setActiveModal(null);
+        setSelectedAssets([]);
+        setPreviewAssetId(null);
+        setPendingChangesCount(0);
+        setStagedChanges(false);
+        setToastMessage('Changes committed');
+      }
+
+      return (
+        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', bgcolor: '#EAEAF0' }}>
+          {/* ── Top Chrome ── */}
+          <TopAppBar onUpload={handleOpenUpload} />
+          <SubToolbar
+            currentView={currentView}
+            onViewChange={handleViewChange}
+            onUpload={handleOpenUpload}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+
+          {/* ── Content Area ── */}
+          <Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'row' }}>
+            {/* Left filter sidebar */}
+            <FilterSidebar activeFilters={activeFilters} onFilterToggle={handleFilterToggle} />
+
+            {/* Main content */}
+            <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+              {/* Active filter chips */}
+              <ActiveFilterChips activeFilters={activeFilters} onRemoveFilter={handleRemoveFilter} />
+
+              {/* Table or Tile view */}
+              {/* ── Section: MainContent ─────────────────────────────── */}
+              {/* → ConnectUI: AssetLibraryContent | spacing.lg */}
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                {currentView === 'library-table' ? (
+                  <AssetTable
+                    assets={STUB_ASSETS}
+                    selectedAssets={selectedAssets}
+                    onRowClick={handleRowClick}
+                    onCheckboxToggle={handleCheckboxToggle}
+                    showEmpty={showEmptyState}
+                    onClearFilters={() => setActiveFilters([])}
+                  />
+                ) : (
+                  <AssetTileGrid
+                    assets={STUB_ASSETS}
+                    selectedAssets={selectedAssets}
+                    onTileClick={handleRowClick}
+                    onCheckboxToggle={handleCheckboxToggle}
+                    showEmpty={showEmptyState}
+                    onClearFilters={() => setActiveFilters([])}
+                  />
+                )}
+              </Box>
+
+              {/* Pagination — always visible */}
+              <PaginationFooter />
+            </Box>
+
+            {/* ── Right Drawer (persistent, single instance) ── */}
+            {/* → ConnectUI: OrionPersistentDrawer | transition: slide-right 250ms */}
+            <Drawer
+              variant="persistent"
+              anchor="right"
+              open={rightDrawer !== null}
+              sx={{
+                width: rightDrawer !== null ? 420 : 0,
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                  width: 420,
+                  position: 'relative',
+                  height: '100%',
+                  zIndex: 1050,
+                  borderLeft: '1px solid #E4E4E7',
+                  borderRight: 'none',
+                  borderTop: 'none',
+                  borderBottom: 'none',
+                },
+              }}>
+              {rightDrawer === 'asset-preview' && (
+                <AssetPreviewContent
+                  assetId={previewAssetId}
+                  assets={STUB_ASSETS}
+                  stagedChanges={stagedChanges}
+                  onStage={() => { setStagedChanges(true); setPendingChangesCount(c => c + 1); }}
+                  onReviewCommit={handleReviewCommit}
+                  onClose={handleClosePreview}
+                  onPrev={handlePrevAsset}
+                  onNext={handleNextAsset}
+                />
+              )}
+              {rightDrawer === 'selection-sidebar' && (
+                <SelectionSidebarContent
+                  selectedAssets={selectedAssets}
+                  assets={STUB_ASSETS}
+                  pendingChangesCount={pendingChangesCount}
+                  onStage={() => setPendingChangesCount(c => c + 1)}
+                  onReviewCommit={handleReviewCommit}
+                  onClear={handleClosePreview}
+                />
+              )}
+            </Drawer>
+          </Box>
+
+          {/* ── Modals ── */}
+          <UploadModal
+            open={activeModal === 'upload'}
+            onClose={() => setActiveModal(null)}
+            onUpload={handleUploadConfirm}
+          />
+          <CommitHistoryModal
+            open={activeModal === 'commit-history'}
+            onClose={() => setActiveModal(null)}
+            onCommit={handleCommit}
+            pendingChangesCount={pendingChangesCount}
+            commitHistoryTab={commitHistoryTab}
+            onTabChange={setCommitHistoryTab}
+          />
+
+          {/* ── Toast ── */}
+          {/* → ConnectUI: OrionSnackbar | spacing.sm */}
+          <Snackbar
+            open={!!toastMessage}
+            autoHideDuration={3000}
+            onClose={() => setToastMessage('')}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+            <Alert
+              onClose={() => setToastMessage('')}
+              severity="success"
+              variant="outlined"
+              sx={{
+                bgcolor: '#DCFCE7', color: '#166534', borderColor: '#166534',
+                fontSize: '13px', fontWeight: 500,
+                '& .MuiAlert-icon': { color: '#166534' }
+              }}>
+              {toastMessage}
+            </Alert>
+          </Snackbar>
+        </Box>
+      );
+    }
+
+    // ── Render ─────────────────────────────────────────────────────────────────
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      <MaterialUI.ThemeProvider theme={theme}>
+        <App />
+      </MaterialUI.ThemeProvider>
+    );
+  </script>
+</body>
+</html>
