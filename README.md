@@ -12,6 +12,7 @@ Each wireframe is a **self-contained HTML file** — no build step, no dependenc
 |---|---|---|
 | Asset Library — Table View | [Open preview](https://htmlpreview.github.io/?https://raw.githubusercontent.com/cos-QO/queen-one-mockups/main/wireframes/asset-library-table.html) | `wireframes/asset-library-table.html` |
 | Assets Management | [Open preview](https://htmlpreview.github.io/?https://raw.githubusercontent.com/cos-QO/queen-one-mockups/main/wireframes/assets-management.html) | `wireframes/assets-management.html` |
+| CreativeSphere — Asset Library | [Open preview](https://cos-qo.github.io/queen-one-mockups/wireframes/creativesphere-asset-library.html) | `wireframes/creativesphere-asset-library.html` |
 | Create Account | [Open preview](https://cos-qo.github.io/queen-one-mockups/wireframes/create-account.html) | `wireframes/create-account.html` |
 | Create Account Form | [Open preview](https://cos-qo.github.io/queen-one-mockups/wireframes/create-account-form.html) | `wireframes/create-account-form.html` |
 
