@@ -13,6 +13,7 @@ Each wireframe is a **self-contained HTML file** — no build step, no dependenc
 | Asset Library — Table View | [Open preview](https://htmlpreview.github.io/?https://raw.githubusercontent.com/cos-QO/queen-one-mockups/main/wireframes/asset-library-table.html) | `wireframes/asset-library-table.html` |
 | Assets Management | [Open preview](https://htmlpreview.github.io/?https://raw.githubusercontent.com/cos-QO/queen-one-mockups/main/wireframes/assets-management.html) | `wireframes/assets-management.html` |
 | Create Account | [Open preview](https://cos-qo.github.io/queen-one-mockups/wireframes/create-account.html) | `wireframes/create-account.html` |
+| Create Account Form | [Open preview](https://cos-qo.github.io/queen-one-mockups/wireframes/create-account-form.html) | `wireframes/create-account-form.html` |
 
 ---
 
@@ -48,7 +49,7 @@ Wireframes are generated and published from the `cc-qo` Claude Code setup using 
 
 ```
 /wireframe <LIN-123 | description | url>   # scopes screens → creates brief + execution plan
-/wireframe-publish <slug>                    # pushes the built HTML to this repo
+/wireframe-publish <slug>                  # pushes the built HTML to this repo
 ```
 
 The publish step base64-encodes the local file and pushes it to `wireframes/<slug>.html` on `main` via the GitHub MCP tool. The preview link is live as soon as the push succeeds.
