@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js"></script>
+  <script src="https://unpkg.com/@emotion/styled@11/dist/emotion-styled.umd.min.js"></script>
+  <script src="https://unpkg.com/@mui/material@5/umd/material-ui.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body style="margin: 0; padding: 0;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const {
+      Box,
+      Paper,
+      Stack,
+      Typography,
+      TextField,
+      FormControlLabel,
+      Checkbox,
+      Button,
+      Link,
+      ThemeProvider,
+      createTheme,
+    } = MaterialUI;
+
+    const theme = MaterialUI.createTheme({
+      palette: {
+        mode: 'light',
+        primary:    { main: '#424242' },
+        secondary:  { main: '#757575' },
+        error:      { main: '#757575' },
+        warning:    { main: '#9E9E9E' },
+        info:       { main: '#757575' },
+        success:    { main: '#616161' },
+        background: { default: '#F5F5F5', paper: '#FFFFFF' },
+        text: { primary: '#212121', secondary: '#757575', disabled: '#BDBDBD' },
+        divider: '#E0E0E0',
+      },
+      typography: { fontFamily: 'Inter, sans-serif' },
+      shadows: Array(25).fill('none'),
+      components: {
+        MuiPaper:   { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E0E0E0' } } },
+        MuiCard:    { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E0E0E0' } } },
+        MuiAppBar:  { defaultProps: { elevation: 0 }, styleOverrides: { root: { borderBottom: '1px solid #E0E0E0' } } },
+        MuiButton:  { defaultProps: { disableElevation: true } },
+        MuiDialog:  { defaultProps: { elevation: 0 }, styleOverrides: { paper: { border: '1px solid #E0E0E0' } } },
+        MuiDrawer:  { styleOverrides: { paper: { border: '1px solid #E0E0E0', boxShadow: 'none' } } },
+        MuiPopover: { styleOverrides: { paper: { border: '1px solid #E0E0E0', boxShadow: 'none' } } },
+        MuiMenu:    { styleOverrides: { paper: { border: '1px solid #E0E0E0', boxShadow: 'none' } } },
+      },
+    });
+
+    function CreateAccountForm({
+      agreed, onToggleAgreed,
+      fullName, onFullName,
+      email, onEmail,
+      password, onPassword,
+      confirm, onConfirm,
+      onSubmit, onSignIn,
+    }) {
+      return (
+        /* ── Page shell ────────────────────────────── */
+        /* → ConnectUI: AuthLayout | spacing.xl */
+        <Box
+          minHeight="100vh"
+          bgcolor="#F5F5F5"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          py={6}
+        >
+          {/* ── Form card ─────────────────────────────── */}
+          {/* → ConnectUI: Card (no elevation) | radius.md */}
+          <Paper
+            sx={{ width: '100%', maxWidth: 460, p: 4 }}
+          >
+            <Stack spacing={3} component="form" onSubmit={onSubmit} noValidate>
+
+              {/* ── Header (title + description) ──────────── */}
+              {/* → ConnectUI: PageHeader | typography.title */}
+              <Stack spacing={1}>
+                <Typography variant="h4">
+                  Create Account
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Fill in the information below to continue.
+                </Typography>
+              </Stack>
+
+              {/* ── Form fields ───────────────────────────── */}
+              {/* → ConnectUI: TextField stack | spacing.md */}
+              <Stack spacing={2}>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  size="medium"
+                  label="Full Name"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => onFullName(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  size="medium"
+                  label="Email Address"
+                  type="email"
+                  value={email}
+                  onChange={(e) => onEmail(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  size="medium"
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => onPassword(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  size="medium"
+                  label="Confirm Password"
+                  type="password"
+                  value={confirm}
+                  onChange={(e) => onConfirm(e.target.value)}
+                />
+              </Stack>
+
+              {/* ── Terms checkbox ────────────────────────── */}
+              {/* → ConnectUI: Checkbox | spacing.sm */}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={agreed}
+                    onChange={onToggleAgreed}
+                  />
+                }
+                label="I agree to the terms and conditions"
+              />
+
+              {/* ── Primary action ────────────────────────── */}
+              {/* → ConnectUI: Button (primary) | radius.md */}
+              <Button
+                variant="outlined"
+                fullWidth
+                size="large"
+                type="submit"
+              >
+                Create Account
+              </Button>
+
+              {/* ── Secondary action ──────────────────────── */}
+              {/* → ConnectUI: Link (inline) | typography.body2 */}
+              <Typography variant="body2" align="center">
+                Already have an account?{' '}
+                <Link href="#" onClick={onSignIn} underline="hover">
+                  Sign in
+                </Link>
+              </Typography>
+
+            </Stack>
+          </Paper>
+        </Box>
+      );
+    }
+
+    function App() {
+      const [agreed, setAgreed]     = React.useState(false);
+      const [fullName, setFullName] = React.useState('');
+      const [email, setEmail]       = React.useState('');
+      const [password, setPassword] = React.useState('');
+      const [confirm, setConfirm]   = React.useState('');
+
+      const handleSubmit = (e) => { e.preventDefault(); /* no destination in scope */ };
+      const handleSignIn = (e) => { e.preventDefault(); /* no destination in scope */ };
+
+      return (
+        <CreateAccountForm
+          agreed={agreed} onToggleAgreed={() => setAgreed(v => !v)}
+          fullName={fullName} onFullName={setFullName}
+          email={email} onEmail={setEmail}
+          password={password} onPassword={setPassword}
+          confirm={confirm} onConfirm={setConfirm}
+          onSubmit={handleSubmit} onSignIn={handleSignIn}
+        />
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      <MaterialUI.ThemeProvider theme={theme}>
+        <App />
+      </MaterialUI.ThemeProvider>
+    );
+  </script>
+</body>
+</html>
