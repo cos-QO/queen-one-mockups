@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CREATIVESPHERE — Asset Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js"></script>
+  <script src="https://unpkg.com/@emotion/styled@11/dist/emotion-styled.umd.min.js"></script>
+  <script src="https://unpkg.com/@mui/material@5/umd/material-ui.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; background: #EAEAF0; }
+    #root { min-height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const {
+      AppBar, Toolbar, Typography, TextField, InputAdornment,
+      ToggleButtonGroup, ToggleButton, Button, IconButton, Chip, Stack,
+      Drawer, List, ListItem, ListItemButton, ListItemText, ListSubheader,
+      Collapse, Checkbox, FormControlLabel, FormGroup,
+      Card, CardContent, Grid, Box, Divider, Tabs, Tab, TabPanel,
+      Select, MenuItem, FormControl, InputLabel, Switch,
+      Dialog, DialogTitle, DialogContent, DialogActions,
+      Alert, Autocomplete, RadioGroup, Radio, FormLabel,
+      Breadcrumbs, Link, Avatar, Tooltip,
+      Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper,
+      ThemeProvider, createTheme, useTheme, Fade, Slide, Collapse: MuiCollapse,
+    } = MaterialUI;
+
+    // ── Theme ───────────────────────────────────────────────────────────────
+    const theme = MaterialUI.createTheme({
+      palette: {
+        mode: 'light',
+        primary:    { main: '#0D0D0D' },
+        secondary:  { main: '#6B7280' },
+        error:      { main: '#6B7280' },
+        warning:    { main: '#9CA3AF' },
+        info:       { main: '#6B7280' },
+        success:    { main: '#6B7280' },
+        background: { default: '#EAEAF0', paper: '#FFFFFF' },
+        text: { primary: '#0D0D0D', secondary: '#6B7280', disabled: '#CBD5E1' },
+        divider: '#E4E4E7',
+      },
+      shape: { borderRadius: 8 },
+      typography: {
+        fontFamily: 'Inter, sans-serif',
+        body1: { fontSize: '14px' },
+        body2: { fontSize: '14px' },
+        caption: { fontSize: '12px' },
+        overline: { fontSize: '12px', letterSpacing: '0.06em' },
+      },
+      shadows: Array(25).fill('none'),
+      components: {
+        MuiPaper:   { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E4E4E7' } } },
+        MuiCard:    { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E4E4E7' } } },
+        MuiAppBar:  { defaultProps: { elevation: 0 }, styleOverrides: { root: { borderBottom: '1px solid #E4E4E7', backgroundColor: '#FFFFFF' } } },
+        MuiButton:  { defaultProps: { disableElevation: true }, styleOverrides: { root: { borderRadius: '6px' } } },
+        MuiDialog:  { defaultProps: { elevation: 0 }, styleOverrides: { paper: { border: '1px solid #E4E4E7' } } },
+        MuiDrawer:  { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiPopover: { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiMenu:    { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiChip:    { styleOverrides: { root: { borderRadius: '4px' } } },
+        MuiOutlinedInput: { styleOverrides: { root: { borderRadius: '6px' } } },
+        MuiToggleButton:  { styleOverrides: { root: { borderRadius: '6px' } } },
+      },
+    });
+
+    // ── Mock data ────────────────────────────────────────────────────────────
+    const MOCK_ASSETS = [
+      { id: 1, filename: 'Hero_Banner_Q1.jpg',       type: 'image', category: 'Photography', tags: ['Q1-2025','hero'],        commitStatus: 'Committed', modified: '2025-04-12', lifecycle: 'Approved' },
+      { id: 2, filename: 'Product_Shot_001.png',     type: 'image', category: 'Photography', tags: ['product','brand'],       commitStatus: 'Pending',   modified: '2025-04-15', lifecycle: 'Review' },
+      { id: 3, filename: 'Brand_Guidelines.pdf',     type: 'doc',   category: 'Print',       tags: ['brand','approved'],      commitStatus: 'Committed', modified: '2025-03-30', lifecycle: 'Approved' },
+      { id: 4, filename: 'Summer_Campaign_v2.mp4',   type: 'video', category: 'Video',       tags: ['Q1-2025','hero'],        commitStatus: 'Pending',   modified: '2025-04-18', lifecycle: 'Draft' },
+      { id: 5, filename: 'Storefront_Wide_02.jpg',   type: 'image', category: 'Photography', tags: ['product'],               commitStatus: 'Committed', modified: '2025-04-01', lifecycle: 'Approved' },
+      { id: 6, filename: 'Email_Header_Spring.png',  type: 'image', category: 'Digital',     tags: ['Q1-2025','brand'],       commitStatus: 'Committed', modified: '2025-04-09', lifecycle: 'Review' },
+      { id: 7, filename: 'PackShot_Fragrance.png',   type: 'image', category: 'Photography', tags: ['product','approved'],    commitStatus: 'Committed', modified: '2025-04-22', lifecycle: 'Approved' },
+      { id: 8, filename: 'Lookbook_FW25_Spread.pdf', type: 'doc',   category: 'Print',       tags: ['brand'],                 commitStatus: 'Pending',   modified: '2025-04-20', lifecycle: 'Draft' },
+    ];
+
+    const CATEGORIES = ['Photography', 'Video', 'Print', 'Digital'];
+    const TAGS_LIST  = ['Q1-2025', 'hero', 'product', 'brand', 'approved'];
+    const LIFECYCLES = ['Draft', 'Review', 'Approved', 'Deprecated'];
+
+    const MOCK_HISTORY = [
+      { id: 1, user: 'A. Chen',   action: 'committed metadata changes', count: 4,  time: '2 hours ago',  fields: ['category', 'tags'] },
+      { id: 2, user: 'M. Ortiz',  action: 'uploaded 3 new assets',      count: 3,  time: '1 day ago',    fields: ['filename', 'lifecycle'] },
+      { id: 3, user: 'T. Westra', action: 'approved lifecycle batch',    count: 12, time: '3 days ago',   fields: ['lifecycle'] },
+    ];
+
+    const MOCK_PENDING = [
+      { field: 'Category',  before: 'Print',   after: 'Digital',  assets: 2 },
+      { field: 'Tags',      before: 'Q1-2025', after: 'Q1-2025, hero', assets: 3 },
+      { field: 'Lifecycle', before: 'Draft',   after: 'Review',   assets: 2 },
+    ];
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function StatusChip({ status }) {
+      return (
+        <Chip
+          label={status}
+          size="small"
+          variant="outlined"
+          sx={{ bgcolor: '#F1F5F9', color: '#6B7280', borderColor: '#E4E4E7', fontSize: '12px' }}
+        />
+      );
+    }
+
+    function Thumbnail({ size = 48 }) {
+      return (
+        /* UPGRADE: thumbnails are gray placeholder boxes — wire up real CDN/object-store URLs */
+        <Box sx={{
+          width: size, height: size,
+          bgcolor: '#F1F5F9',
+          border: '1px solid #E4E4E7',
+          borderRadius: '4px',
+          flexShrink: 0,
+        }} />
+      );
+    }
+
+    function SectionLabel({ children }) {
+      return (
+        <Typography variant="overline" sx={{ color: '#9CA3AF', display: 'block', mb: 0.5, textTransform: 'uppercase' }}>
+          {children}
+        </Typography>
+      );
+    }
+
+    // ── Filter Sidebar ───────────────────────────────────────────────────────
+    function FilterSidebar({ activeFilters, onToggleFilter }) {
+      const [expanded, setExpanded] = React.useState({ Status: true, Category: true, Tags: false, Source: false, SKU: false });
+
+      /* UPGRADE: filter taxonomy is static — wire to brand-scoped taxonomy service */
+      const sections = {
+        Status:   ['Draft', 'Review', 'Approved', 'Deprecated'],
+        Category: ['Photography', 'Video', 'Print', 'Digital'],
+        Tags:     ['Q1-2025', 'hero', 'product', 'brand', 'approved'],
+        Source:   ['Upload', 'Import', 'API'],
+        SKU:      ['SKU-001', 'SKU-002', 'SKU-003'],
+      };
+
+      return (
+        <Box sx={{ width: 240, flexShrink: 0, borderRight: '1px solid #E4E4E7', bgcolor: '#FFFFFF', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ p: 1.5, borderBottom: '1px solid #E4E4E7' }}>
+            <TextField
+              size="small"
+              placeholder="Find filter…"
+              fullWidth
+              InputProps={{ startAdornment: <InputAdornment position="start"><Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>⌕</Typography></InputAdornment> }}
+            />
+          </Box>
+          <List dense disablePadding>
+            {Object.entries(sections).map(([section, values]) => (
+              <Box key={section}>
+                <ListItemButton
+                  onClick={() => setExpanded(e => ({ ...e, [section]: !e[section] }))}
+                  sx={{ py: 0.75, px: 1.5 }}
+                >
+                  <ListItemText
+                    primary={<Typography variant="body2" sx={{ fontWeight: 500, color: '#0D0D0D' }}>{section}</Typography>}
+                  />
+                  <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>
+                    {expanded[section] ? '▲' : '▼'}
+                  </Typography>
+                </ListItemButton>
+                <MuiCollapse in={expanded[section]} timeout={200}>
+                  <FormGroup sx={{ px: 1.5, pb: 1 }}>
+                    {values.map(v => (
+                      <FormControlLabel
+                        key={v}
+                        control={
+                          <Checkbox
+                            size="small"
+                            checked={!!activeFilters[v]}
+                            onChange={() => onToggleFilter(v)}
+                            sx={{ color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' } }}
+                          />
+                        }
+                        label={<Typography variant="body2" sx={{ color: '#6B7280' }}>{v}</Typography>}
+                      />
+                    ))}
+                  </FormGroup>
+                </MuiCollapse>
+                <Divider />
+              </Box>
+            ))}
+          </List>
+        </Box>
+      );
+    }
+
+    // ── Top Bar ──────────────────────────────────────────────────────────────
+    function TopBar({ viewMode, setViewMode, search, setSearch, selected, setSelected, pending, onOpenCommit, onOpenUpload, onOpenSidebar, activeFilters, onRemoveFilter }) {
+      const filterChips = Object.keys(activeFilters).filter(k => activeFilters[k]);
+
+      return (
+        <AppBar position="static" color="default">
+          <Toolbar sx={{ gap: 1.5, flexWrap: 'wrap', minHeight: '56px !important', py: 0.5 }}>
+            {/* ── Section: Breadcrumb + Title ───────────────────────────── */}
+            {/* → ConnectUI: OrionBreadcrumb | spacing.sm */}
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ mr: 'auto' }}>
+              <Breadcrumbs separator="›" sx={{ fontSize: '12px' }}>
+                <Link underline="hover" sx={{ fontSize: '12px', color: '#6B7280', cursor: 'pointer' }}>CREATIVESPHERE</Link>
+                <Link underline="hover" sx={{ fontSize: '12px', color: '#6B7280', cursor: 'pointer' }}>Apex Retail</Link>
+                <Link underline="hover" sx={{ fontSize: '12px', color: '#6B7280', cursor: 'pointer' }}>APEX-US</Link>
+              </Breadcrumbs>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#0D0D0D', pl: 1, borderLeft: '1px solid #E4E4E7', lineHeight: 1 }}>
+                Asset Library
+              </Typography>
+            </Stack>
+
+            {/* ── Section: Omni-search ─────────────────────────────────── */}
+            {/* UPGRADE: omni-search currently filters table client-side — wire to real search API */}
+            {/* → ConnectUI: OrionSearchBar | spacing.sm */}
+            <TextField
+              size="small"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search assets, tags, SKUs…"
+              sx={{ width: 280 }}
+              InputProps={{
+                startAdornment: <InputAdornment position="start"><Typography sx={{ fontSize: '14px', color: '#9CA3AF' }}>⌕</Typography></InputAdornment>
+              }}
+            />
+
+            {/* ── Section: View toggle + sort ──────────────────────────── */}
+            <ToggleButtonGroup
+              value={viewMode}
+              exclusive
+              onChange={(e, v) => { if (v) setViewMode(v); }}
+              size="small"
+            >
+              <ToggleButton value="table" aria-label="table view" sx={{ px: 1 }}>
+                <Typography sx={{ fontSize: '12px' }}>☰ Table</Typography>
+              </ToggleButton>
+              <ToggleButton value="tile" aria-label="tile view" sx={{ px: 1 }}>
+                <Typography sx={{ fontSize: '12px' }}>⊞ Tiles</Typography>
+              </ToggleButton>
+            </ToggleButtonGroup>
+
+            <Button variant="text" size="small" sx={{ color: '#6B7280', borderColor: '#E4E4E7' }}>
+              Sort: Last modified ↓
+            </Button>
+
+            {/* ── Section: Selection + Pending chips ──────────────────── */}
+            {selected.length > 0 && (
+              <Chip
+                label={`${selected.length} selected`}
+                size="small"
+                onClick={onOpenSidebar}
+                onDelete={() => setSelected([])}
+                sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', cursor: 'pointer', fontSize: '12px' }}
+              />
+            )}
+            {pending > 0 && (
+              <Chip
+                label={`${pending} pending`}
+                size="small"
+                onClick={onOpenCommit}
+                variant="outlined"
+                sx={{ borderColor: '#CBD5E1', color: '#6B7280', cursor: 'pointer', fontSize: '12px' }}
+              />
+            )}
+
+            <Button variant="contained" size="small" onClick={onOpenUpload} sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', '&:hover': { bgcolor: '#0D0D0D' } }}>
+              Upload
+            </Button>
+          </Toolbar>
+
+          {/* ── Active filter strip ──────────────────────────────────────── */}
+          {filterChips.length > 0 && (
+            <Box sx={{ px: 2, pb: 1, display: 'flex', gap: 0.75, flexWrap: 'wrap', borderTop: '1px solid #E4E4E7' }}>
+              {filterChips.map(f => (
+                <Chip
+                  key={f}
+                  label={f}
+                  size="small"
+                  onDelete={() => onRemoveFilter(f)}
+                  sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px' }}
+                />
+              ))}
+              <Button variant="text" size="small" sx={{ fontSize: '12px', color: '#9CA3AF', p: 0, minWidth: 'auto' }}>
+                Clear all
+              </Button>
+            </Box>
+          )}
+        </AppBar>
+      );
+    }
+
+    // ── Empty State ──────────────────────────────────────────────────────────
+    function EmptyState({ onClear }) {
+      return (
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1.5, py: 8 }}>
+          <Typography sx={{ fontSize: '32px', color: '#CBD5E1' }}>⌕</Typography>
+          <Typography variant="h6" sx={{ color: '#0D0D0D', fontWeight: 600 }}>No assets match</Typography>
+          <Typography variant="body2" sx={{ color: '#6B7280' }}>Try adjusting your search or removing filters.</Typography>
+          <Button variant="outlined" size="small" onClick={onClear} sx={{ borderColor: '#E4E4E7', color: '#0D0D0D' }}>
+            Clear filters
+          </Button>
+        </Box>
+      );
+    }
+
+    // ── Library Table View ───────────────────────────────────────────────────
+    function LibraryTable({ assets, selected, setSelected, onSelectAsset }) {
+      const allSelected = assets.length > 0 && assets.every(a => selected.includes(a.id));
+
+      function toggleAll() {
+        if (allSelected) setSelected([]);
+        else setSelected(assets.map(a => a.id));
+      }
+
+      function toggleRow(id) {
+        setSelected(prev =>
+          prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+        );
+      }
+
+      if (assets.length === 0) return <EmptyState onClear={() => {}} />;
+
+      return (
+        /* UPGRADE: thumbnails are gray placeholder boxes — wire up real CDN/object-store URLs */
+        <Box sx={{ flex: 1, overflowY: 'auto' }}>
+          <TableContainer component={Box} sx={{ border: 'none' }}>
+            <Table size="small" stickyHeader>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#F8F9FC' }}>
+                  <TableCell padding="checkbox" sx={{ bgcolor: '#F8F9FC', borderBottom: '1px solid #E4E4E7' }}>
+                    <Checkbox
+                      size="small"
+                      checked={allSelected}
+                      indeterminate={selected.length > 0 && !allSelected}
+                      onChange={toggleAll}
+                      sx={{ color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' }, '&.MuiCheckbox-indeterminate': { color: '#0D0D0D' } }}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ bgcolor: '#F8F9FC', borderBottom: '1px solid #E4E4E7', width: 64 }} />
+                  <TableCell sx={{ bgcolor: '#F8F9FC', borderBottom: '1px solid #E4E4E7', fontWeight: 600, fontSize: '12px', color: '#6B7280' }}>Filename</TableCell>
+                  <TableCell sx={{ bgcolor: '#F8F9FC', borderBottom: '1px solid #E4E4E7', fontWeight: 600, fontSize: '12px', color: '#6B7280' }}>Category</TableCell>
+                  <TableCell sx={{ bgcolor: '#F8F9FC', borderBottom: '1px solid #E4E4E7', fontWeight: 600, fontSize: '12px', color: '#6B7280' }}>Tags</TableCell>
+                  <TableCell sx={{ bgcolor: '#F8F9FC', borderBottom: '1px solid #E4E4E7', fontWeight: 600, fontSize: '12px', color: '#6B7280' }}>Commit</TableCell>
+                  <TableCell sx={{ bgcolor: '#F8F9FC', borderBottom: '1px solid #E4E4E7', fontWeight: 600, fontSize: '12px', color: '#6B7280' }}>Modified</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {assets.map(asset => {
+                  const isSelected = selected.includes(asset.id);
+                  return (
+                    <TableRow
+                      key={asset.id}
+                      hover
+                      selected={isSelected}
+                      sx={{
+                        cursor: 'pointer',
+                        bgcolor: isSelected ? '#F8F9FC' : '#FFFFFF',
+                        '&:hover': { bgcolor: '#F8F9FC' },
+                        '& td': { borderBottom: '1px solid #E4E4E7' },
+                      }}
+                    >
+                      <TableCell padding="checkbox" onClick={e => { e.stopPropagation(); toggleRow(asset.id); }}>
+                        <Checkbox
+                          size="small"
+                          checked={isSelected}
+                          sx={{ color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' } }}
+                        />
+                      </TableCell>
+                      <TableCell onClick={() => onSelectAsset(asset.id)}>
+                        <Thumbnail size={40} />
+                      </TableCell>
+                      <TableCell onClick={() => onSelectAsset(asset.id)}>
+                        <Typography variant="body2" sx={{ color: '#0D0D0D', fontWeight: 500, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {asset.filename}
+                        </Typography>
+                      </TableCell>
+                      <TableCell onClick={() => onSelectAsset(asset.id)}>
+                        <Typography variant="body2" sx={{ color: '#6B7280' }}>{asset.category}</Typography>
+                      </TableCell>
+                      <TableCell onClick={() => onSelectAsset(asset.id)}>
+                        <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                          {asset.tags.slice(0, 2).map(t => (
+                            <Chip key={t} label={t} size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px', height: 20 }} />
+                          ))}
+                        </Stack>
+                      </TableCell>
+                      <TableCell onClick={() => onSelectAsset(asset.id)}>
+                        <StatusChip status={asset.commitStatus} />
+                      </TableCell>
+                      <TableCell onClick={() => onSelectAsset(asset.id)}>
+                        <Typography variant="caption" sx={{ color: '#9CA3AF' }}>{asset.modified}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      );
+    }
+
+    // ── Library Tile View ────────────────────────────────────────────────────
+    function LibraryTile({ assets, selected, setSelected, onSelectAsset }) {
+      function toggleTile(id) {
+        setSelected(prev =>
+          prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+        );
+      }
+
+      if (assets.length === 0) return <EmptyState onClear={() => {}} />;
+
+      return (
+        /* UPGRADE: thumbnails are gray placeholder boxes — wire up real CDN/object-store URLs */
+        <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+          <Grid container spacing={2}>
+            {assets.map(asset => {
+              const isSelected = selected.includes(asset.id);
+              return (
+                <Grid item xs={6} sm={4} md={3} key={asset.id}>
+                  <Card
+                    variant="outlined"
+                    sx={{
+                      cursor: 'pointer',
+                      position: 'relative',
+                      borderColor: isSelected ? '#0D0D0D' : '#E4E4E7',
+                      borderWidth: isSelected ? 2 : 1,
+                      '&:hover .tile-checkbox': { opacity: 1 },
+                      transition: 'border-color 0.15s ease',
+                    }}
+                    onClick={() => onSelectAsset(asset.id)}
+                  >
+                    {/* Checkbox overlay */}
+                    <Box
+                      className="tile-checkbox"
+                      sx={{ position: 'absolute', top: 6, left: 6, opacity: isSelected ? 1 : 0, transition: 'opacity 0.15s ease', zIndex: 1 }}
+                      onClick={e => { e.stopPropagation(); toggleTile(asset.id); }}
+                    >
+                      <Checkbox
+                        size="small"
+                        checked={isSelected}
+                        sx={{
+                          p: 0.25,
+                          bgcolor: '#FFFFFF',
+                          borderRadius: '4px',
+                          color: '#CBD5E1',
+                          '&.Mui-checked': { color: '#0D0D0D' },
+                        }}
+                      />
+                    </Box>
+
+                    {/* Thumbnail */}
+                    <Box sx={{ height: 128, bgcolor: '#F1F5F9', borderBottom: '1px solid #E4E4E7' }} />
+
+                    <CardContent sx={{ p: 1.25, '&:last-child': { pb: 1.25 } }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 500, color: '#0D0D0D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', mb: 0.75 }}
+                        title={asset.filename}
+                      >
+                        {asset.filename}
+                      </Typography>
+                      <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
+                        <Chip label={asset.category} size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px', height: 20 }} />
+                        <StatusChip status={asset.commitStatus} />
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
+      );
+    }
+
+    // ── Asset Preview Drawer ─────────────────────────────────────────────────
+    function AssetPreviewDrawer({ open, assetId, assets, onClose, onOpenCommit, pending }) {
+      const asset = assets.find(a => a.id === assetId) || assets[0];
+      const currentIdx = assets.findIndex(a => a.id === assetId);
+
+      if (!asset) return null;
+
+      return (
+        /* ── Motion: drawer-open → ConnectUI: Drawer | transition: slide-right 250ms */
+        <Drawer
+          anchor="right"
+          open={open}
+          onClose={onClose}
+          variant="temporary"
+          sx={{ '& .MuiDrawer-paper': { width: 480, border: '1px solid #E4E4E7', boxShadow: 'none' } }}
+        >
+          {/* ── Section: Drawer header ───────────────────────────────── */}
+          {/* → ConnectUI: OrionDrawerHeader | spacing.sm */}
+          <Box sx={{ p: 1.5, borderBottom: '1px solid #E4E4E7', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton size="small" onClick={onClose} sx={{ color: '#6B7280' }}>✕</IconButton>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, flex: 1 }}>Asset Detail</Typography>
+            <Stack direction="row" spacing={0.5}>
+              <IconButton size="small" disabled={currentIdx <= 0} sx={{ color: '#6B7280' }}>‹</IconButton>
+              <IconButton size="small" disabled={currentIdx >= assets.length - 1} sx={{ color: '#6B7280' }}>›</IconButton>
+            </Stack>
+          </Box>
+
+          <Box sx={{ flex: 1, overflowY: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            {/* ── Section: Preview thumbnail ───────────────────────── */}
+            {/* UPGRADE: thumbnails are gray placeholder boxes — wire up real CDN/object-store URLs */}
+            <Box sx={{ height: 192, bgcolor: '#F1F5F9', border: '1px solid #E4E4E7', borderRadius: '8px' }} />
+
+            {/* ── Section: Identity ────────────────────────────────── */}
+            {/* → ConnectUI: OrionMetadataSection | spacing.sm */}
+            <Box>
+              <SectionLabel>Identity</SectionLabel>
+              <Stack spacing={1}>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography variant="body2" sx={{ color: '#9CA3AF' }}>Filename</Typography>
+                  <Typography variant="body2" sx={{ color: '#0D0D0D', fontWeight: 500, maxWidth: 260, textAlign: 'right', wordBreak: 'break-all' }}>{asset.filename}</Typography>
+                </Stack>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography variant="body2" sx={{ color: '#9CA3AF' }}>Source</Typography>
+                  <Typography variant="body2" sx={{ color: '#0D0D0D' }}>Upload</Typography>
+                </Stack>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography variant="body2" sx={{ color: '#9CA3AF' }}>Modified</Typography>
+                  <Typography variant="body2" sx={{ color: '#0D0D0D' }}>{asset.modified}</Typography>
+                </Stack>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography variant="body2" sx={{ color: '#9CA3AF' }}>Created</Typography>
+                  <Typography variant="body2" sx={{ color: '#0D0D0D' }}>2025-01-15</Typography>
+                </Stack>
+              </Stack>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: Scope ───────────────────────────────────── */}
+            <Box>
+              <SectionLabel>Scope</SectionLabel>
+              <Stack direction="row" spacing={0.75} flexWrap="wrap">
+                <Chip label="CREATIVESPHERE" size="small" variant="outlined" sx={{ fontSize: '12px', color: '#6B7280', borderColor: '#E4E4E7' }} />
+                <Chip label="Apex Retail" size="small" variant="outlined" sx={{ fontSize: '12px', color: '#6B7280', borderColor: '#E4E4E7' }} />
+                <Chip label="APEX-US" size="small" variant="outlined" sx={{ fontSize: '12px', color: '#6B7280', borderColor: '#E4E4E7' }} />
+              </Stack>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: Classification ──────────────────────────── */}
+            <Box>
+              <SectionLabel>Classification</SectionLabel>
+              <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
+                <Chip label={asset.category} size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px' }} />
+                {asset.tags.map(t => (
+                  <Chip key={t} label={t} size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px' }} />
+                ))}
+                <Chip
+                  label="+ Add"
+                  size="small"
+                  variant="outlined"
+                  sx={{ fontSize: '12px', color: '#9CA3AF', borderColor: '#E4E4E7', borderStyle: 'dashed' }}
+                />
+              </Stack>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: Associations ────────────────────────────── */}
+            {/* UPGRADE: SKU autocomplete options are static — wire to product catalog */}
+            <Box>
+              <SectionLabel>Associations</SectionLabel>
+              <List dense disablePadding>
+                <ListItem disablePadding sx={{ py: 0.25 }}>
+                  <ListItemText primary={<Typography variant="body2" sx={{ color: '#0D0D0D' }}>SKU-001</Typography>} />
+                  <Chip label="2 assets" size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px', height: 20 }} />
+                </ListItem>
+                <ListItem disablePadding sx={{ py: 0.25 }}>
+                  <ListItemText primary={<Typography variant="body2" sx={{ color: '#0D0D0D' }}>SKU-047</Typography>} />
+                  <Chip label="1 asset" size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px', height: 20 }} />
+                </ListItem>
+              </List>
+              <Button variant="text" size="small" sx={{ mt: 0.5, p: 0, fontSize: '12px', color: '#9CA3AF' }}>
+                + Link SKU
+              </Button>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: Lifecycle ───────────────────────────────── */}
+            <Box>
+              <SectionLabel>Lifecycle</SectionLabel>
+              <Stack direction="row" alignItems="center" spacing={1.5}>
+                <Chip
+                  label={asset.lifecycle}
+                  size="small"
+                  sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px' }}
+                />
+                <FormControl size="small" sx={{ minWidth: 140 }}>
+                  <Select defaultValue={asset.lifecycle} sx={{ fontSize: '13px' }}>
+                    {LIFECYCLES.map(l => <MenuItem key={l} value={l}><Typography variant="body2">{l}</Typography></MenuItem>)}
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: Commit status ───────────────────────────── */}
+            <Box>
+              <SectionLabel>Commit</SectionLabel>
+              <Stack direction="row" alignItems="center" spacing={1.5}>
+                <StatusChip status={asset.commitStatus} />
+                {pending > 0 && (
+                  <Typography variant="body2" sx={{ color: '#6B7280' }}>{pending} pending change{pending !== 1 ? 's' : ''}</Typography>
+                )}
+              </Stack>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: History ─────────────────────────────────── */}
+            {/* UPGRADE: history log is mock data — wire to commit log service */}
+            <Box>
+              <SectionLabel>History</SectionLabel>
+              <List dense disablePadding>
+                {MOCK_HISTORY.slice(0, 3).map(h => (
+                  <ListItem key={h.id} disablePadding sx={{ py: 0.5 }}>
+                    <ListItemText
+                      primary={<Typography variant="body2" sx={{ color: '#0D0D0D' }}>{h.action}</Typography>}
+                      secondary={<Typography variant="caption" sx={{ color: '#9CA3AF' }}>{h.user} · {h.time}</Typography>}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+              <Button variant="text" size="small" sx={{ mt: 0.5, p: 0, fontSize: '12px', color: '#9CA3AF' }}>
+                Show all
+              </Button>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: Future / coming soon ────────────────────── */}
+            <Box sx={{ opacity: 0.45, border: '1px dashed #CBD5E1', borderRadius: '8px', p: 1.5 }}>
+              <SectionLabel>Generation — coming soon</SectionLabel>
+              <Typography variant="caption" sx={{ color: '#9CA3AF' }}>
+                AI-assisted metadata suggestions, auto-tagging, and content generation will appear here in a future release.
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* ── Section: Footer actions ──────────────────────────────── */}
+          <Box sx={{ p: 1.5, borderTop: '1px solid #E4E4E7', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Button variant="text" size="small" sx={{ color: '#6B7280' }}>History</Button>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={onOpenCommit}
+              disabled={pending === 0}
+              sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', '&:hover': { bgcolor: '#0D0D0D' }, '&.Mui-disabled': { bgcolor: '#E4E4E7', color: '#9CA3AF' } }}
+            >
+              Review &amp; commit
+            </Button>
+          </Box>
+        </Drawer>
+      );
+    }
+
+    // ── Selection Sidebar ────────────────────────────────────────────────────
+    function SelectionSidebar({ open, selectedCount, onClose, onOpenCommit, pending }) {
+      const [commitMsg, setCommitMsg] = React.useState('');
+      const [batchCategory, setBatchCategory] = React.useState([]);
+      const [batchTags, setBatchTags] = React.useState([]);
+
+      return (
+        /* ── Motion: drawer-open → ConnectUI: Drawer | transition: slide-right 250ms */
+        <Drawer
+          anchor="right"
+          open={open}
+          variant="persistent"
+          sx={{ '& .MuiDrawer-paper': { width: 480, border: '1px solid #E4E4E7', boxShadow: 'none' } }}
+        >
+          {/* ── Section: Header ──────────────────────────────────────── */}
+          {/* → ConnectUI: OrionDrawerHeader | spacing.sm */}
+          <Box sx={{ p: 1.5, borderBottom: '1px solid #E4E4E7', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton size="small" onClick={onClose} sx={{ color: '#6B7280' }}>✕</IconButton>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, flex: 1 }}>
+              {selectedCount} asset{selectedCount !== 1 ? 's' : ''} selected
+            </Typography>
+            <Button variant="text" size="small" onClick={onClose} sx={{ color: '#9CA3AF', fontSize: '12px' }}>
+              Clear
+            </Button>
+          </Box>
+
+          <Box sx={{ flex: 1, overflowY: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            {/* ── Section: Selection summary ───────────────────────── */}
+            <Box>
+              <SectionLabel>Selection</SectionLabel>
+              <Typography variant="body2" sx={{ color: '#6B7280' }}>
+                {selectedCount} assets across 1 brand — Apex Retail
+              </Typography>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: Batch fields ─────────────────────────────── */}
+            {/* → ConnectUI: OrionBatchEditPanel | spacing.md */}
+            <Box>
+              <SectionLabel>Batch edit</SectionLabel>
+              <Stack spacing={2}>
+                {/* Categories */}
+                <Autocomplete
+                  multiple
+                  options={CATEGORIES}
+                  value={batchCategory}
+                  onChange={(_, v) => setBatchCategory(v)}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="Categories"
+                      size="small"
+                      placeholder={batchCategory.length === 0 ? 'Set category for all (currently mixed)' : ''}
+                    />
+                  )}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip key={option} label={option} size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px' }} {...getTagProps({ index })} />
+                    ))
+                  }
+                />
+
+                {/* Tags */}
+                <Autocomplete
+                  multiple
+                  freeSolo
+                  options={TAGS_LIST}
+                  value={batchTags}
+                  onChange={(_, v) => setBatchTags(v)}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="Tags"
+                      size="small"
+                      placeholder={batchTags.length === 0 ? '+ Add tag' : ''}
+                    />
+                  )}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip key={option} label={option} size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px' }} {...getTagProps({ index })} />
+                    ))
+                  }
+                />
+
+                {/* Status */}
+                <FormControl size="small" fullWidth>
+                  <InputLabel>Status</InputLabel>
+                  <Select label="Status" defaultValue="">
+                    <MenuItem value=""><Typography variant="body2" sx={{ color: '#9CA3AF' }}>Multiple values</Typography></MenuItem>
+                    {LIFECYCLES.map(l => <MenuItem key={l} value={l}><Typography variant="body2">{l}</Typography></MenuItem>)}
+                  </Select>
+                </FormControl>
+
+                {/* SKU links */}
+                {/* UPGRADE: SKU autocomplete options are static — wire to product catalog */}
+                <Autocomplete
+                  multiple
+                  options={['SKU-001', 'SKU-002', 'SKU-003', 'SKU-047']}
+                  renderInput={params => (
+                    <TextField {...params} label="SKU links" size="small" placeholder="Link selected to SKU…" />
+                  )}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip key={option} label={option} size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px' }} {...getTagProps({ index })} />
+                    ))
+                  }
+                />
+              </Stack>
+            </Box>
+
+            <Divider />
+
+            {/* ── Section: Pending changes summary ─────────────────── */}
+            <Box>
+              <SectionLabel>Pending changes</SectionLabel>
+              <Box sx={{ border: '1px solid #E4E4E7', borderRadius: '8px', p: 1.5 }}>
+                <List dense disablePadding>
+                  {MOCK_PENDING.map((p, i) => (
+                    <ListItem key={i} disablePadding sx={{ py: 0.5 }}>
+                      <ListItemText
+                        primary={<Typography variant="body2" sx={{ color: '#0D0D0D' }}>{p.field}: <span style={{ color: '#9CA3AF' }}>{p.before}</span> → <span style={{ fontWeight: 500 }}>{p.after}</span></Typography>}
+                        secondary={<Typography variant="caption" sx={{ color: '#9CA3AF' }}>{p.assets} assets</Typography>}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </Box>
+
+            {/* ── Section: Commit message ──────────────────────────── */}
+            <TextField
+              multiline
+              rows={2}
+              size="small"
+              label="Commit message (optional)"
+              placeholder="Optional: describe this change"
+              value={commitMsg}
+              onChange={e => setCommitMsg(e.target.value)}
+            />
+
+            {/* ── Section: Alert ───────────────────────────────────── */}
+            <Box sx={{ border: '1px solid #E4E4E7', borderRadius: '8px', p: 1.5, bgcolor: '#F8F9FC' }}>
+              <Typography variant="caption" sx={{ color: '#6B7280' }}>
+                Changes are staged. Click Commit to apply to all selected assets.
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* ── Section: Footer actions ──────────────────────────────── */}
+          <Box sx={{ p: 1.5, borderTop: '1px solid #E4E4E7', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Button variant="text" size="small" sx={{ color: '#6B7280' }}>Discard</Button>
+            <Stack direction="row" spacing={1}>
+              <Button variant="outlined" size="small" onClick={onOpenCommit} sx={{ borderColor: '#E4E4E7', color: '#0D0D0D' }}>
+                Review
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={onOpenCommit}
+                disabled={pending === 0}
+                sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', '&:hover': { bgcolor: '#0D0D0D' }, '&.Mui-disabled': { bgcolor: '#E4E4E7', color: '#9CA3AF' } }}
+              >
+                Commit
+              </Button>
+            </Stack>
+          </Box>
+        </Drawer>
+      );
+    }
+
+    // ── Upload Modal ─────────────────────────────────────────────────────────
+    function UploadModal({ open, onClose, onConfirm }) {
+      const [overridePerAsset, setOverridePerAsset] = React.useState(false);
+      const [initialStatus, setInitialStatus] = React.useState('draft');
+      const mockFiles = [
+        { name: 'Campaign_Hero_Final.jpg', size: '2.4 MB' },
+        { name: 'Product_Packshot_v3.png', size: '1.1 MB' },
+      ];
+
+      return (
+        /* ── Motion: modal-open → ConnectUI: Dialog | transition: fade+slide-up 250ms */
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+          {/* ── Section: Dialog title ────────────────────────────── */}
+          {/* → ConnectUI: OrionDialogHeader | spacing.sm */}
+          <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E4E4E7', pb: 1.5 }}>
+            <Typography variant="h6" component="span" sx={{ fontWeight: 600 }}>Upload assets</Typography>
+            <IconButton size="small" onClick={onClose} sx={{ color: '#6B7280' }}>✕</IconButton>
+          </DialogTitle>
+
+          <DialogContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            {/* ── Section: Context inheritance banner ─────────────── */}
+            {/* → ConnectUI: OrionContextBanner | spacing.sm */}
+            <Box sx={{ border: '1px solid #E4E4E7', borderRadius: '8px', p: 1.5, bgcolor: '#F8F9FC' }}>
+              <Typography variant="caption" sx={{ color: '#6B7280', display: 'block', mb: 1 }}>
+                These assets will be added to:
+              </Typography>
+              <Stack direction="row" spacing={0.75}>
+                <Chip label="CREATIVESPHERE" size="small" variant="outlined" sx={{ fontSize: '12px', color: '#6B7280', borderColor: '#E4E4E7' }} />
+                <Chip label="Apex Retail" size="small" variant="outlined" sx={{ fontSize: '12px', color: '#6B7280', borderColor: '#E4E4E7' }} />
+                <Chip label="APEX-US" size="small" variant="outlined" sx={{ fontSize: '12px', color: '#6B7280', borderColor: '#E4E4E7' }} />
+              </Stack>
+            </Box>
+
+            {/* ── Section: Drop zone ──────────────────────────────── */}
+            {/* → ConnectUI: OrionDropZone | spacing.lg */}
+            <Box sx={{
+              border: '1px dashed #CBD5E1',
+              borderRadius: '8px',
+              p: 5,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 1,
+              cursor: 'pointer',
+              '&:hover': { bgcolor: '#F8F9FC' },
+              transition: 'background-color 0.15s ease',
+            }}>
+              <Typography sx={{ fontSize: '32px', color: '#CBD5E1' }}>↑</Typography>
+              <Typography variant="body1" sx={{ color: '#0D0D0D', fontWeight: 500 }}>
+                Drop files or click to browse
+              </Typography>
+              <Typography variant="caption" sx={{ color: '#9CA3AF' }}>
+                PNG, JPG, WEBP, MP4 up to 50 MB
+              </Typography>
+            </Box>
+
+            {/* ── Section: File list ──────────────────────────────── */}
+            <Box>
+              <Typography variant="caption" sx={{ color: '#9CA3AF', display: 'block', mb: 0.75 }}>2 files queued</Typography>
+              <List dense disablePadding>
+                {mockFiles.map((f, i) => (
+                  <ListItem
+                    key={i}
+                    disablePadding
+                    sx={{ py: 0.75, borderBottom: '1px solid #E4E4E7' }}
+                    secondaryAction={
+                      <IconButton size="small" sx={{ color: '#9CA3AF' }}>✕</IconButton>
+                    }
+                  >
+                    <Box sx={{ width: 32, height: 32, bgcolor: '#F1F5F9', border: '1px solid #E4E4E7', borderRadius: '4px', mr: 1.5, flexShrink: 0 }} />
+                    <ListItemText
+                      primary={<Typography variant="body2" sx={{ fontWeight: 500, color: '#0D0D0D' }}>{f.name}</Typography>}
+                      secondary={<Typography variant="caption" sx={{ color: '#9CA3AF' }}>{f.size}</Typography>}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+
+            {/* ── Section: Shared metadata ────────────────────────── */}
+            {/* → ConnectUI: OrionSharedMetadataPanel | spacing.md */}
+            <Box>
+              <Typography variant="overline" sx={{ color: '#9CA3AF', display: 'block', mb: 1.5, textTransform: 'uppercase', fontSize: '12px', letterSpacing: '0.06em' }}>
+                Apply to all uploaded assets
+              </Typography>
+              <Stack spacing={2}>
+                <FormControl size="small" fullWidth>
+                  <InputLabel>Category</InputLabel>
+                  <Select label="Category" defaultValue="">
+                    <MenuItem value=""><Typography variant="body2" sx={{ color: '#9CA3AF' }}>Select category</Typography></MenuItem>
+                    {CATEGORIES.map(c => <MenuItem key={c} value={c}><Typography variant="body2">{c}</Typography></MenuItem>)}
+                  </Select>
+                </FormControl>
+
+                <Autocomplete
+                  multiple
+                  freeSolo
+                  options={TAGS_LIST}
+                  renderInput={params => (
+                    <TextField {...params} label="Tags" size="small" placeholder="Add tags…" />
+                  )}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip key={option} label={option} size="small" sx={{ bgcolor: '#F1F5F9', color: '#6B7280', fontSize: '12px' }} {...getTagProps({ index })} />
+                    ))
+                  }
+                />
+
+                <FormControl size="small" fullWidth>
+                  <InputLabel>Status</InputLabel>
+                  <Select label="Status" defaultValue="Draft">
+                    {LIFECYCLES.map(l => <MenuItem key={l} value={l}><Typography variant="body2">{l}</Typography></MenuItem>)}
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Box>
+
+            {/* ── Section: Per-asset override toggle ──────────────── */}
+            <FormControlLabel
+              control={
+                <Switch
+                  size="small"
+                  checked={overridePerAsset}
+                  onChange={e => setOverridePerAsset(e.target.checked)}
+                  sx={{ '& .MuiSwitch-thumb': { bgcolor: overridePerAsset ? '#0D0D0D' : '#CBD5E1' }, '& .MuiSwitch-track': { bgcolor: overridePerAsset ? '#0D0D0D' : '#E4E4E7' } }}
+                />
+              }
+              label={<Typography variant="body2" sx={{ color: '#6B7280' }}>Override per asset (review each file)</Typography>}
+            />
+            <MuiCollapse in={overridePerAsset} timeout={200}>
+              <TableContainer component={Box} sx={{ border: '1px solid #E4E4E7', borderRadius: '8px' }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: '#F8F9FC' }}>
+                      <TableCell sx={{ fontSize: '12px', color: '#6B7280', fontWeight: 600 }}>Filename</TableCell>
+                      <TableCell sx={{ fontSize: '12px', color: '#6B7280', fontWeight: 600 }}>Category</TableCell>
+                      <TableCell sx={{ fontSize: '12px', color: '#6B7280', fontWeight: 600 }}>Tags</TableCell>
+                      <TableCell sx={{ fontSize: '12px', color: '#6B7280', fontWeight: 600 }}>Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {mockFiles.map((f, i) => (
+                      <TableRow key={i}>
+                        <TableCell><Typography variant="caption">{f.name}</Typography></TableCell>
+                        <TableCell>
+                          <FormControl size="small" sx={{ minWidth: 100 }}>
+                            <Select defaultValue="" sx={{ fontSize: '12px' }}>
+                              {CATEGORIES.map(c => <MenuItem key={c} value={c}><Typography variant="caption">{c}</Typography></MenuItem>)}
+                            </Select>
+                          </FormControl>
+                        </TableCell>
+                        <TableCell><TextField size="small" sx={{ width: 120, '& input': { fontSize: '12px' } }} placeholder="Add tags" /></TableCell>
+                        <TableCell>
+                          <FormControl size="small" sx={{ minWidth: 90 }}>
+                            <Select defaultValue="Draft" sx={{ fontSize: '12px' }}>
+                              {LIFECYCLES.map(l => <MenuItem key={l} value={l}><Typography variant="caption">{l}</Typography></MenuItem>)}
+                            </Select>
+                          </FormControl>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </MuiCollapse>
+
+            {/* ── Section: Initial status radio ───────────────────── */}
+            <Box>
+              <FormLabel sx={{ fontSize: '12px', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Initial status
+              </FormLabel>
+              <RadioGroup
+                row
+                value={initialStatus}
+                onChange={e => setInitialStatus(e.target.value)}
+                sx={{ mt: 0.5 }}
+              >
+                <FormControlLabel value="draft" control={<Radio size="small" sx={{ color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' } }} />} label={<Typography variant="body2">Draft</Typography>} />
+                <FormControlLabel value="review" control={<Radio size="small" sx={{ color: '#CBD5E1', '&.Mui-checked': { color: '#0D0D0D' } }} />} label={<Typography variant="body2">Review</Typography>} />
+              </RadioGroup>
+            </Box>
+
+            {/* ── Section: Confirmation summary ───────────────────── */}
+            <Box sx={{ border: '1px solid #E4E4E7', borderRadius: '8px', p: 1.5, bgcolor: '#F8F9FC' }}>
+              <Typography variant="caption" sx={{ color: '#6B7280' }}>
+                2 assets will be added to Apex Retail as {initialStatus.charAt(0).toUpperCase() + initialStatus.slice(1)}.
+              </Typography>
+            </Box>
+          </DialogContent>
+
+          <DialogActions sx={{ px: 2.5, py: 1.5, borderTop: '1px solid #E4E4E7', gap: 1 }}>
+            <Button variant="text" onClick={onClose} sx={{ color: '#6B7280' }}>Cancel</Button>
+            <Button
+              variant="contained"
+              onClick={onConfirm}
+              sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', '&:hover': { bgcolor: '#0D0D0D' } }}
+            >
+              Confirm upload
+            </Button>
+          </DialogActions>
+        </Dialog>
+      );
+    }
+
+    // ── Commit History Modal ─────────────────────────────────────────────────
+    function CommitHistoryModal({ open, onClose, pending, setPending }) {
+      const [tab, setTab] = React.useState(0);
+      const [commitMsg, setCommitMsg] = React.useState('');
+      const [expanded, setExpanded] = React.useState({});
+      /* UPGRADE: history log is mock data — wire to commit log service */
+
+      function handleCommit() {
+        setPending(0);
+        onClose();
+      }
+
+      return (
+        /* ── Motion: modal-open → ConnectUI: Dialog | transition: fade+slide-up 250ms */
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+          {/* ── Section: Dialog title ────────────────────────────── */}
+          {/* → ConnectUI: OrionDialogHeader | spacing.sm */}
+          <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E4E4E7', pb: 1.5 }}>
+            <Typography variant="h6" component="span" sx={{ fontWeight: 600 }}>Review &amp; commit</Typography>
+            <IconButton size="small" onClick={onClose} sx={{ color: '#6B7280' }}>✕</IconButton>
+          </DialogTitle>
+
+          <Box sx={{ borderBottom: '1px solid #E4E4E7', px: 2 }}>
+            <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ '& .MuiTab-root': { fontSize: '13px', textTransform: 'none', minWidth: 80 } }}>
+              <Tab label={`Pending (${pending})`} />
+              <Tab label="History" />
+            </Tabs>
+          </Box>
+
+          <DialogContent sx={{ p: 2.5, minHeight: 320 }}>
+            {/* Pending tab */}
+            {tab === 0 && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {pending === 0 ? (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', py: 6, gap: 1.5 }}>
+                    <Typography sx={{ fontSize: '32px', color: '#CBD5E1' }}>✓</Typography>
+                    <Typography variant="body2" sx={{ color: '#6B7280' }}>No pending changes</Typography>
+                  </Box>
+                ) : (
+                  <>
+                    {/* ── Section: Pending list with diff ──────────── */}
+                    <List disablePadding>
+                      {MOCK_PENDING.map((p, i) => (
+                        <ListItem key={i} sx={{ px: 0, py: 1, borderBottom: '1px solid #E4E4E7', alignItems: 'flex-start' }}>
+                          <ListItemText
+                            primary={<Typography variant="body2" sx={{ fontWeight: 500, color: '#0D0D0D' }}>{p.field}</Typography>}
+                            secondary={<Typography variant="caption" sx={{ color: '#9CA3AF' }}>{p.assets} assets</Typography>}
+                          />
+                          {/* Before/After diff */}
+                          <Box sx={{ display: 'flex', gap: 1, ml: 2, flexShrink: 0 }}>
+                            <Box sx={{ bgcolor: '#F8F9FC', border: '1px solid #E4E4E7', borderRadius: '4px', px: 1, py: 0.5, minWidth: 80 }}>
+                              <Typography variant="caption" sx={{ color: '#9CA3AF', display: 'block', mb: 0.25 }}>Before</Typography>
+                              <Typography variant="body2" sx={{ color: '#6B7280' }}>{p.before}</Typography>
+                            </Box>
+                            <Typography sx={{ fontSize: '16px', color: '#CBD5E1', alignSelf: 'center' }}>→</Typography>
+                            <Box sx={{ bgcolor: '#FFFFFF', border: '1px solid #E4E4E7', borderRadius: '4px', px: 1, py: 0.5, minWidth: 80 }}>
+                              <Typography variant="caption" sx={{ color: '#9CA3AF', display: 'block', mb: 0.25 }}>After</Typography>
+                              <Typography variant="body2" sx={{ color: '#0D0D0D', fontWeight: 500 }}>{p.after}</Typography>
+                            </Box>
+                          </Box>
+                        </ListItem>
+                      ))}
+                    </List>
+
+                    {/* ── Section: Commit message field ────────────── */}
+                    <TextField
+                      multiline
+                      rows={3}
+                      size="small"
+                      label="Commit message (optional)"
+                      placeholder="Optional: describe this change for history"
+                      value={commitMsg}
+                      onChange={e => setCommitMsg(e.target.value)}
+                      fullWidth
+                    />
+                  </>
+                )}
+              </Box>
+            )}
+
+            {/* History tab */}
+            {tab === 1 && (
+              <List disablePadding>
+                {/* UPGRADE: history log is mock data — wire to commit log service */}
+                {MOCK_HISTORY.map((h, i) => (
+                  <Box key={h.id}>
+                    <ListItemButton
+                      sx={{ px: 0, py: 1.5 }}
+                      onClick={() => setExpanded(e => ({ ...e, [h.id]: !e[h.id] }))}
+                    >
+                      <Avatar sx={{ width: 32, height: 32, bgcolor: '#E4E4E7', color: '#6B7280', fontSize: '12px', mr: 1.5, flexShrink: 0 }}>
+                        {h.user.split(' ').map(n => n[0]).join('')}
+                      </Avatar>
+                      <ListItemText
+                        primary={<Typography variant="body2" sx={{ fontWeight: 500, color: '#0D0D0D' }}>{h.user} {h.action}</Typography>}
+                        secondary={<Typography variant="caption" sx={{ color: '#9CA3AF' }}>{h.count} assets · {h.time}</Typography>}
+                      />
+                      <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>{expanded[h.id] ? '▲' : '▼'}</Typography>
+                    </ListItemButton>
+                    <MuiCollapse in={!!expanded[h.id]} timeout={200}>
+                      <Box sx={{ pl: 6, pb: 1.5 }}>
+                        <Typography variant="caption" sx={{ color: '#9CA3AF' }}>
+                          Changed: {h.fields.join(', ')}
+                        </Typography>
+                      </Box>
+                    </MuiCollapse>
+                    {i < MOCK_HISTORY.length - 1 && <Divider />}
+                  </Box>
+                ))}
+              </List>
+            )}
+          </DialogContent>
+
+          <DialogActions sx={{ px: 2.5, py: 1.5, borderTop: '1px solid #E4E4E7', gap: 1 }}>
+            {tab === 0 ? (
+              <>
+                <Button variant="text" onClick={onClose} sx={{ color: '#6B7280' }}>Cancel</Button>
+                <Button
+                  variant="contained"
+                  onClick={handleCommit}
+                  disabled={pending === 0}
+                  sx={{ bgcolor: '#0D0D0D', color: '#FFFFFF', '&:hover': { bgcolor: '#0D0D0D' }, '&.Mui-disabled': { bgcolor: '#E4E4E7', color: '#9CA3AF' } }}
+                >
+                  Commit changes
+                </Button>
+              </>
+            ) : (
+              <Button variant="text" onClick={onClose} sx={{ color: '#6B7280' }}>Close</Button>
+            )}
+          </DialogActions>
+        </Dialog>
+      );
+    }
+
+    // ── Main App ─────────────────────────────────────────────────────────────
+    function App() {
+      const [viewMode, setViewMode]   = React.useState('table'); // 'table' | 'tile'
+      const [drawer, setDrawer]       = React.useState(null);    // null | 'asset-preview' | 'selection-sidebar'
+      const [modal, setModal]         = React.useState(null);    // null | 'upload' | 'commit-history'
+      const [selected, setSelected]   = React.useState([]);
+      const [pending, setPending]     = React.useState(3);       // mock pending count
+      const [search, setSearch]       = React.useState('');
+      const [activeFilters, setActiveFilters] = React.useState({});
+      const [activeAssetId, setActiveAssetId] = React.useState(null);
+
+      // Client-side filter logic
+      const filteredAssets = React.useMemo(() => {
+        let assets = MOCK_ASSETS;
+        if (search) {
+          const q = search.toLowerCase();
+          assets = assets.filter(a =>
+            a.filename.toLowerCase().includes(q) ||
+            a.category.toLowerCase().includes(q) ||
+            a.tags.some(t => t.toLowerCase().includes(q))
+          );
+        }
+        return assets;
+      }, [search, activeFilters]);
+
+      // When selected count changes, manage drawer state
+      React.useEffect(() => {
+        if (selected.length === 0 && drawer === 'selection-sidebar') {
+          setDrawer(null);
+        } else if (selected.length >= 2) {
+          setDrawer('selection-sidebar');
+        } else if (selected.length === 1 && drawer === 'selection-sidebar') {
+          setDrawer(null);
+        }
+      }, [selected.length]);
+
+      function handleSelectAsset(id) {
+        if (selected.length === 1 && selected[0] === id) {
+          // clicking already-selected single asset — keep preview open
+          setActiveAssetId(id);
+          setDrawer('asset-preview');
+          return;
+        }
+        if (selected.length >= 1 && !selected.includes(id)) {
+          // Add to multi-select — opens sidebar
+          setSelected(prev => [...prev, id]);
+        } else {
+          // Single click — open preview
+          setActiveAssetId(id);
+          setSelected([id]);
+          setDrawer('asset-preview');
+        }
+      }
+
+      function handleToggleFilter(key) {
+        setActiveFilters(f => ({ ...f, [key]: !f[key] }));
+      }
+
+      function handleRemoveFilter(key) {
+        setActiveFilters(f => { const n = { ...f }; delete n[key]; return n; });
+      }
+
+      const SIDEBAR_WIDTH = drawer === 'selection-sidebar' || drawer === 'asset-preview' ? 480 : 0;
+
+      return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', bgcolor: '#EAEAF0' }}>
+          {/* ── Top Bar ──────────────────────────────────────────────────── */}
+          <TopBar
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            search={search}
+            setSearch={setSearch}
+            selected={selected}
+            setSelected={setSelected}
+            pending={pending}
+            onOpenCommit={() => setModal('commit-history')}
+            onOpenUpload={() => setModal('upload')}
+            onOpenSidebar={() => { if (selected.length > 0) setDrawer('selection-sidebar'); }}
+            activeFilters={activeFilters}
+            onRemoveFilter={handleRemoveFilter}
+          />
+
+          {/* ── Main content area ─────────────────────────────────────── */}
+          <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+            {/* Filter sidebar */}
+            <FilterSidebar activeFilters={activeFilters} onToggleFilter={handleToggleFilter} />
+
+            {/* Content pane — shrinks when drawer is open */}
+            <Box sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              mr: (drawer === 'selection-sidebar' || drawer === 'asset-preview') ? `${SIDEBAR_WIDTH}px` : 0,
+              transition: 'margin-right 0.25s ease-in-out',
+            }}>
+              {viewMode === 'table' ? (
+                <LibraryTable
+                  assets={filteredAssets}
+                  selected={selected}
+                  setSelected={setSelected}
+                  onSelectAsset={handleSelectAsset}
+                />
+              ) : (
+                <LibraryTile
+                  assets={filteredAssets}
+                  selected={selected}
+                  setSelected={setSelected}
+                  onSelectAsset={handleSelectAsset}
+                />
+              )}
+            </Box>
+          </Box>
+
+          {/* ── Asset Preview Drawer ─────────────────────────────────── */}
+          <AssetPreviewDrawer
+            open={drawer === 'asset-preview'}
+            assetId={activeAssetId}
+            assets={filteredAssets}
+            onClose={() => { setDrawer(null); setSelected([]); }}
+            onOpenCommit={() => setModal('commit-history')}
+            pending={pending}
+          />
+
+          {/* ── Selection Sidebar ─────────────────────────────────────── */}
+          <SelectionSidebar
+            open={drawer === 'selection-sidebar'}
+            selectedCount={selected.length}
+            onClose={() => { setDrawer(null); setSelected([]); }}
+            onOpenCommit={() => setModal('commit-history')}
+            pending={pending}
+          />
+
+          {/* ── Upload Modal ─────────────────────────────────────────── */}
+          <UploadModal
+            open={modal === 'upload'}
+            onClose={() => setModal(null)}
+            onConfirm={() => setModal(null)}
+          />
+
+          {/* ── Commit History Modal ──────────────────────────────────── */}
+          <CommitHistoryModal
+            open={modal === 'commit-history'}
+            onClose={() => setModal(null)}
+            pending={pending}
+            setPending={setPending}
+          />
+        </Box>
+      );
+    }
+
+    // ── Render ───────────────────────────────────────────────────────────────
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      <MaterialUI.ThemeProvider theme={theme}>
+        <App />
+      </MaterialUI.ThemeProvider>
+    );
+  </script>
+</body>
+</html>
