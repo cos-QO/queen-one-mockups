@@ -8,7 +8,9 @@ Each wireframe is a **self-contained HTML file** — no build step, no dependenc
 
 ## Wireframes
 
-No wireframes published yet.
+| Screen | Preview | File |
+|---|---|---|
+| Creativesphere Assets | [Open preview](https://cos-qo.github.io/queen-one-mockups/wireframes/creativesphere-assets.html) | `wireframes/creativesphere-assets.html` |
 
 ---
 
