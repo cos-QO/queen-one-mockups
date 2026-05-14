@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Besties Nav Rail Transforms — Queen One V2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/iconoir@latest/css/iconoir.css" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js"></script>
+  <script src="https://unpkg.com/@emotion/styled@11/dist/emotion-styled.umd.min.js"></script>
+  <script src="https://unpkg.com/@mui/material@5/umd/material-ui.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; font-family: 'Inter', sans-serif; }
+    body { overflow: hidden; }
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+    /* Iconoir icon sizing helpers */
+    .icon-20 { font-size: 20px; display: inline-flex; align-items: center; justify-content: center; }
+    .icon-16 { font-size: 16px; display: inline-flex; align-items: center; justify-content: center; }
+    .icon-14 { font-size: 14px; display: inline-flex; align-items: center; justify-content: center; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const {
+      Box, AppBar, Toolbar, Typography, Drawer, List, ListItemButton,
+      ListItemIcon, ListItemText, Divider, IconButton, Button, TextField,
+      Avatar, Chip, Card, CardContent, Stack, Grid, Paper,
+      ToggleButtonGroup, ToggleButton, Table, TableBody, TableCell,
+      TableContainer, TableHead, TableRow, LinearProgress, Select,
+      MenuItem, FormControl, ThemeProvider, createTheme, InputBase,
+    } = MaterialUI;
+
+    // Icons via Iconoir CSS — loaded from cdn.jsdelivr.net/npm/iconoir@latest/css/iconoir.css
+    // Usage: <i className="iconoir-{kebab-name} icon-20" style={{ color: 'inherit' }} />
+    function Icon({ name, size = 20, style = {} }) {
+      return (
+        <i
+          className={`iconoir-${name}`}
+          style={{ fontSize: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, ...style }}
+        />
+      );
+    }
+
+    // ── Theme ──────────────────────────────────────────────────────────────
+    const theme = createTheme({
+      palette: {
+        mode: 'light',
+        primary:    { main: '#0D0D0D' },
+        secondary:  { main: '#6B7280' },
+        error:      { main: '#6B7280' },
+        warning:    { main: '#9CA3AF' },
+        info:       { main: '#6B7280' },
+        success:    { main: '#6B7280' },
+        background: { default: '#EAEAF0', paper: '#FFFFFF' },
+        text: { primary: '#0D0D0D', secondary: '#6B7280', disabled: '#CBD5E1' },
+        divider: '#E4E4E7',
+      },
+      shape: { borderRadius: 8 },
+      typography: {
+        fontFamily: 'Inter, sans-serif',
+        body1: { fontSize: '14px' },
+        body2: { fontSize: '14px' },
+        caption: { fontSize: '12px' },
+        overline: { fontSize: '12px', letterSpacing: '0.06em' },
+      },
+      shadows: Array(25).fill('none'),
+      components: {
+        MuiPaper:   { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E4E4E7' } } },
+        MuiCard:    { defaultProps: { elevation: 0 }, styleOverrides: { root: { border: '1px solid #E4E4E7' } } },
+        MuiAppBar:  { defaultProps: { elevation: 0 }, styleOverrides: { root: { borderBottom: '1px solid #E4E4E7', backgroundColor: '#FFFFFF' } } },
+        MuiButton:  { defaultProps: { disableElevation: true }, styleOverrides: { root: { borderRadius: '6px', textTransform: 'none' } } },
+        MuiDialog:  { defaultProps: { elevation: 0 }, styleOverrides: { paper: { border: '1px solid #E4E4E7' } } },
+        MuiDrawer:  { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiPopover: { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiMenu:    { styleOverrides: { paper: { border: '1px solid #E4E4E7', boxShadow: 'none' } } },
+        MuiChip:    { styleOverrides: { root: { borderRadius: '4px' } } },
+        MuiOutlinedInput: { styleOverrides: { root: { borderRadius: '6px' } } },
+        MuiToggleButton:  { styleOverrides: { root: { borderRadius: '6px', textTransform: 'none' } } },
+        MuiTableCell: { styleOverrides: { root: { borderBottom: '1px solid #E4E4E7' } } },
+      },
+    });
+
+    // ── Placeholder Box ────────────────────────────────────────────────────
+    function PlaceholderBox({ label, height = 120, subtitle }) {
+      return (
+        <Box sx={{
+          bgcolor: '#F1F5F9', border: '2px dashed #CBD5E1', borderRadius: 1,
+          padding: '32px', display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center', minHeight: height,
+        }}>
+          <Typography sx={{ color: '#9CA3AF', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em' }}>
+            {label}
+          </Typography>
+          {subtitle && (
+            <Typography sx={{ color: '#9CA3AF', fontSize: '12px', mt: 1, textAlign: 'center' }}>
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
+      );
+    }
+
+    // ── Status Chip ────────────────────────────────────────────────────────
+    function StatusChip({ label, bg, color }) {
+      return (
+        <Box component="span" sx={{
+          display: 'inline-flex', alignItems: 'center',
+          padding: '2px 8px', borderRadius: '4px', bgcolor: bg,
+          fontSize: '12px', fontWeight: 500, color: color, whiteSpace: 'nowrap',
+        }}>
+          {label}
+        </Box>
+      );
+    }
+
+    // ── Stage chip helper ──────────────────────────────────────────────────
+    const STAGE_CHIPS = {
+      'Prospecting':      { bg: '#F1F5F9', color: '#6B7280' },
+      'Audit Requested':  { bg: '#FEF9C3', color: '#854D0E' },
+      'Pitching':         { bg: '#EFF6FF', color: '#1D4ED8' },
+      'Closing':          { bg: '#FEF9C3', color: '#854D0E' },
+      'Signed':           { bg: '#DCFCE7', color: '#166534' },
+    };
+
+    const PHASE_CHIPS = {
+      'Platform Orientation': { bg: '#F1F5F9', color: '#6B7280' },
+      'Client Intake':        { bg: '#FEF9C3', color: '#854D0E' },
+      'Build Creative':       { bg: '#FEF9C3', color: '#854D0E' },
+      'Testing & Approvals':  { bg: '#EFF6FF', color: '#1D4ED8' },
+      'Go Live':              { bg: '#DCFCE7', color: '#166534' },
+    };
+
+    const ATTENTION_CHIPS = {
+      'Stuck in Onboarding':       { bg: '#FEE2E2', color: '#991B1B' },
+      'Pipeline — No touch in 14d':{ bg: '#FEF9C3', color: '#854D0E' },
+      'At Risk':                   { bg: '#FEE2E2', color: '#991B1B' },
+      'Live':                      { bg: '#DCFCE7', color: '#166534' },
+    };
+
+    // ── Agency Nav List ────────────────────────────────────────────────────
+    // → ConnectUI: SidebarNav (agency mode) | layout.rail.agency
+    function AgencyNavList({ screen, handleSetScreen }) {
+      const agencyItems = [
+        { key: 'besties-hub',     label: 'Besties Hub',     icon: <Icon name="home-simple" size={20} /> },
+        { key: 'pipeline-tracker',label: 'Pipeline Tracker',icon: <Icon name="kanban-board" size={20} /> },
+        { key: 'client-tracker',  label: 'Client Tracker',  icon: <Icon name="table-2-columns" size={20} /> },
+        { key: 'billing',         label: 'Billing',         icon: <Icon name="wallet-alt" size={20} /> },
+        { key: 'resources',       label: 'Resources',       icon: <Icon name="book-open-page" size={20} /> },
+      ];
+
+      const preSaleItems = [
+        { key: 'revenue-calc',   label: 'Revenue Calculator', icon: <Icon name="calculator" size={20} /> },
+        { key: 'audit-request',  label: 'Audit Request',       icon: <Icon name="clipboard-check" size={20} /> },
+        { key: 'sales-materials',label: 'Sales Materials',     icon: <Icon name="multiple-pages" size={20} /> },
+        { key: 'pre-unveil',     label: 'Pre-Unveil',          icon: <Icon name="eye-alt" size={20} /> },
+      ];
+
+      const isActive = (key) => screen === key;
+
+      return (
+        <List disablePadding sx={{ pt: 1 }}>
+          {/* ── Section: AGENCY ── */}
+          <Typography sx={{
+            fontSize: '12px', fontWeight: 500, color: '#9CA3AF',
+            letterSpacing: '0.06em', textTransform: 'uppercase',
+            px: 2, pt: 1.5, pb: 0.5,
+          }}>
+            AGENCY
+          </Typography>
+
+          {agencyItems.map((item) => (
+            <ListItemButton
+              key={item.key}
+              onClick={() => handleSetScreen(item.key)}
+              sx={{
+                mx: 1, mb: 0.5, borderRadius: '6px',
+                minHeight: '36px', px: 1.5, py: 0,
+                bgcolor: isActive(item.key) ? '#F8F9FC' : 'transparent',
+                borderLeft: isActive(item.key) ? '2px solid #0D0D0D' : '2px solid transparent',
+                color: isActive(item.key) ? '#0D0D0D' : '#6B7280',
+                fontWeight: isActive(item.key) ? 500 : 400,
+                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', color: '#0D0D0D' },
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 28, color: 'inherit' }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{ fontSize: '13px', fontWeight: 'inherit', color: 'inherit' }}
+              />
+            </ListItemButton>
+          ))}
+
+          <Divider sx={{ my: 1, mx: 2, borderColor: '#E4E4E7' }} />
+
+          {/* ── Section: PRE-SALE TOOLS ── */}
+          <Typography sx={{
+            fontSize: '12px', fontWeight: 500, color: '#9CA3AF',
+            letterSpacing: '0.06em', textTransform: 'uppercase',
+            px: 2, pt: 0.5, pb: 0.5,
+          }}>
+            PRE-SALE TOOLS
+          </Typography>
+
+          {preSaleItems.map((item) => (
+            <ListItemButton
+              key={item.key}
+              sx={{
+                mx: 1, mb: 0.5, borderRadius: '6px',
+                minHeight: '36px', px: 1.5, py: 0,
+                color: '#6B7280',
+                borderLeft: '2px solid transparent',
+                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', color: '#0D0D0D' },
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 28, color: 'inherit' }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{ fontSize: '13px', color: 'inherit' }}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+      );
+    }
+
+    // ── Brand Nav List ─────────────────────────────────────────────────────
+    // → ConnectUI: SidebarNav (brand mode) | layout.rail.brand
+    function BrandNavList({ brandWorkspaceActiveItem, setBrandWorkspaceActiveItem, handleSetScreen }) {
+      const brandItems = [
+        { key: 'brand-book',    label: 'Brand Book',    icon: <Icon name="bookmark-book" size={20} /> },
+        { key: 'creativesphere',label: 'Creativesphere', icon: <Icon name="sparks" size={20} /> },
+        { key: 'connect',       label: 'Connect',        icon: <Icon name="link" size={20} /> },
+        { key: 'people',        label: 'People',         icon: <Icon name="group" size={20} /> },
+        { key: 'dimensions',    label: 'Dimensions',     icon: <Icon name="bar-chart" size={20} /> },
+      ];
+
+      const isActive = (key) => brandWorkspaceActiveItem === key;
+
+      return (
+        <List disablePadding sx={{ pt: 1 }}>
+          {/* Back to Agency */}
+          <ListItemButton
+            onClick={() => handleSetScreen('client-tracker')}
+            sx={{
+              mx: 1, mb: 0.5, borderRadius: '6px',
+              minHeight: '36px', px: 1.5, py: 0,
+              color: '#6B7280',
+              borderLeft: '2px solid transparent',
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', color: '#0D0D0D' },
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 28, color: 'inherit' }}>
+              <Icon name="nav-arrow-left" size={20} />
+            </ListItemIcon>
+            <ListItemText
+              primary="Back to Agency"
+              primaryTypographyProps={{ fontSize: '13px', color: 'inherit' }}
+            />
+          </ListItemButton>
+
+          <Divider sx={{ my: 1, mx: 2, borderColor: '#E4E4E7' }} />
+
+          {brandItems.map((item) => (
+            <ListItemButton
+              key={item.key}
+              onClick={() => setBrandWorkspaceActiveItem(item.key)}
+              sx={{
+                mx: 1, mb: 0.5, borderRadius: '6px',
+                minHeight: '36px', px: 1.5, py: 0,
+                bgcolor: isActive(item.key) ? '#F8F9FC' : 'transparent',
+                borderLeft: isActive(item.key) ? '2px solid #0D0D0D' : '2px solid transparent',
+                color: isActive(item.key) ? '#0D0D0D' : '#6B7280',
+                fontWeight: isActive(item.key) ? 500 : 400,
+                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', color: '#0D0D0D' },
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 28, color: 'inherit' }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{ fontSize: '13px', fontWeight: 'inherit', color: 'inherit' }}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+      );
+    }
+
+    // ── AppBar: Besties Hub ────────────────────────────────────────────────
+    // → ConnectUI: BestiesHubAppBar | chrome.topBar
+    function BestiesHubAppBar() {
+      return (
+        <AppBar position="sticky" sx={{ zIndex: 1200, color: '#0D0D0D' }}>
+          <Toolbar sx={{ height: '56px', minHeight: '56px', px: 3, gap: 2 }}>
+            <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#0D0D0D', display: 'flex', alignItems: 'center', gap: 1 }}>
+              👑 Besties Hub
+            </Typography>
+            <Box sx={{ flex: 1 }} />
+            <TextField
+              size="small"
+              placeholder="Search brands, contacts…"
+              InputProps={{
+                startAdornment: <Icon name="search" size={16} style={{ color: '#9CA3AF', marginRight: 8 }} />,
+              }}
+              sx={{ width: 280, '& .MuiOutlinedInput-root': { fontSize: '13px', bgcolor: '#F8F9FC' } }}
+            />
+            <IconButton size="small" sx={{ color: '#6B7280' }}>
+              <Icon name="user-plus" size={20} />
+            </IconButton>
+            <IconButton size="small" sx={{ color: '#6B7280' }}>
+              <Icon name="bell" size={20} />
+            </IconButton>
+            <Avatar sx={{ width: 32, height: 32, bgcolor: '#E4E4E7', color: '#374151', fontSize: '13px', fontWeight: 500 }}>
+              JD
+            </Avatar>
+          </Toolbar>
+        </AppBar>
+      );
+    }
+
+    // ── AppBar: Pipeline Tracker ───────────────────────────────────────────
+    // → ConnectUI: PipelineAppBar | chrome.topBar
+    function PipelineAppBar() {
+      return (
+        <AppBar position="sticky" sx={{ zIndex: 1200, color: '#0D0D0D' }}>
+          <Toolbar sx={{ height: '56px', minHeight: '56px', px: 3, gap: 2 }}>
+            <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#0D0D0D' }}>
+              Pipeline Tracker
+            </Typography>
+            <Box sx={{ flex: 1 }} />
+            <TextField
+              size="small"
+              placeholder="Search pipeline…"
+              InputProps={{
+                startAdornment: <Icon name="search" size={16} style={{ color: '#9CA3AF', marginRight: 8 }} />,
+              }}
+              sx={{ width: 240, '& .MuiOutlinedInput-root': { fontSize: '13px', bgcolor: '#F8F9FC' } }}
+            />
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<Icon name="filter" size={16} />}
+              sx={{
+                fontSize: '13px', fontWeight: 500, color: '#374151',
+                borderColor: '#CBD5E1', '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', borderColor: '#CBD5E1' }
+              }}
+            >
+              Filter
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<Icon name="plus" size={20} />}
+              sx={{
+                fontSize: '13px', fontWeight: 500,
+                bgcolor: '#0D0D0D', color: '#FFFFFF',
+                '&:hover': { bgcolor: '#374151' }
+              }}
+            >
+              Add Brand
+            </Button>
+          </Toolbar>
+        </AppBar>
+      );
+    }
+
+    // ── AppBar: Client Tracker ─────────────────────────────────────────────
+    // → ConnectUI: ClientTrackerAppBar | chrome.topBar
+    function ClientTrackerAppBar() {
+      return (
+        <AppBar position="sticky" sx={{ zIndex: 1200, color: '#0D0D0D' }}>
+          <Toolbar sx={{ height: '56px', minHeight: '56px', px: 3, gap: 2 }}>
+            <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#0D0D0D' }}>
+              Client Tracker
+            </Typography>
+            <Box sx={{ flex: 1 }} />
+            <TextField
+              size="small"
+              placeholder="Search clients…"
+              InputProps={{
+                startAdornment: <Icon name="search" size={16} style={{ color: '#9CA3AF', marginRight: 8 }} />,
+              }}
+              sx={{ width: 240, '& .MuiOutlinedInput-root': { fontSize: '13px', bgcolor: '#F8F9FC' } }}
+            />
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<Icon name="filter" size={16} />}
+              sx={{
+                fontSize: '13px', fontWeight: 500, color: '#374151',
+                borderColor: '#CBD5E1', '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', borderColor: '#CBD5E1' }
+              }}
+            >
+              Filter
+            </Button>
+            <Avatar sx={{ width: 32, height: 32, bgcolor: '#E4E4E7', color: '#374151', fontSize: '13px', fontWeight: 500 }}>
+              JD
+            </Avatar>
+          </Toolbar>
+        </AppBar>
+      );
+    }
+
+    // ── AppBar: Brand Workspace ────────────────────────────────────────────
+    // → ConnectUI: BrandWorkspaceAppBar | chrome.topBar.brand
+    function BrandWorkspaceAppBar({ siteValue, setSiteValue }) {
+      return (
+        <AppBar position="sticky" sx={{ zIndex: 1200, color: '#0D0D0D' }}>
+          <Toolbar sx={{ height: '56px', minHeight: '56px', px: 3, gap: 1.5 }}>
+            <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>
+              Corkcicle
+            </Typography>
+            <Icon name="nav-arrow-right" size={14} style={{ color: '#9CA3AF' }} />
+            <FormControl size="small">
+              <Select
+                value={siteValue}
+                onChange={(e) => setSiteValue(e.target.value)}
+                sx={{
+                  fontSize: '13px', bgcolor: '#F8F9FC',
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E4E7' },
+                  '& .MuiSelect-select': { py: '4px', pr: '28px' },
+                }}
+              >
+                <MenuItem value="corkcicle.com" sx={{ fontSize: '13px' }}>corkcicle.com</MenuItem>
+                <MenuItem value="corkcicle.com/uk" sx={{ fontSize: '13px' }}>corkcicle.com/uk</MenuItem>
+              </Select>
+            </FormControl>
+            <Box sx={{ flex: 1 }} />
+            <TextField
+              size="small"
+              placeholder="Search brand…"
+              InputProps={{
+                startAdornment: <Icon name="search" size={16} style={{ color: '#9CA3AF', marginRight: 8 }} />,
+              }}
+              sx={{ width: 240, '& .MuiOutlinedInput-root': { fontSize: '13px', bgcolor: '#F8F9FC' } }}
+            />
+            <Avatar sx={{ width: 32, height: 32, bgcolor: '#E4E4E7', color: '#374151', fontSize: '13px', fontWeight: 500 }}>
+              JD
+            </Avatar>
+          </Toolbar>
+        </AppBar>
+      );
+    }
+
+    // ── Besties Hub Screen ─────────────────────────────────────────────────
+    // → ConnectUI: BestiesHubScreen | screen.bestiesHub
+    function BestiesHubScreen({ handleSetScreen, setClientTrackerView }) {
+      const kpiCards = [
+        { label: 'Brands Live',        value: '12', sub: 'Active email programs', onClick: () => { setClientTrackerView('live'); handleSetScreen('client-tracker'); } },
+        { label: 'Brands Onboarding',  value: '4',  sub: 'In setup phase',        onClick: () => { setClientTrackerView('onboarding'); handleSetScreen('client-tracker'); } },
+        { label: 'Brands in Pipeline', value: '7',  sub: 'Pre-sale opportunities',onClick: () => handleSetScreen('pipeline-tracker') },
+        { label: 'Agency MRR',         value: '$48,200', sub: 'Monthly recurring revenue', onClick: null },
+      ];
+
+      const attentionCards = [
+        { brand: 'Corkcicle',  status: 'Stuck in Onboarding',        cta: 'Go to Onboarding', ctaAction: () => { setClientTrackerView('onboarding'); handleSetScreen('client-tracker'); } },
+        { brand: 'Authenteak', status: 'Pipeline — No touch in 14d', cta: 'Update Pipeline',  ctaAction: () => handleSetScreen('pipeline-tracker') },
+        { brand: 'Nomad Goods',status: 'At Risk',                    cta: 'View Brand',       ctaAction: () => handleSetScreen('brand-workspace') },
+      ];
+
+      const toolCards = [
+        { label: 'Revenue Calculator', icon: <Icon name="calculator" size={20} /> },
+        { label: 'Audit Request Flow', icon: <Icon name="clipboard-check" size={20} /> },
+        { label: 'Sales Materials Generator', icon: <Icon name="multiple-pages" size={20} /> },
+        { label: 'Pre-Unveil Tool',    icon: <Icon name="eye-alt" size={20} /> },
+      ];
+
+      return (
+        <Box sx={{ flex: 1, overflowY: 'auto', p: 3, bgcolor: '#EAEAF0', display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* ── Section: KPI Summary Strip ── */}
+          {/* → ConnectUI: KpiSummaryStrip | dashboard.kpiCards */}
+          <Grid container spacing={2}>
+            {kpiCards.map((card) => (
+              <Grid item xs={3} key={card.label}>
+                <Paper
+                  onClick={card.onClick || undefined}
+                  sx={{
+                    p: '20px', cursor: card.onClick ? 'pointer' : 'default',
+                    '&:hover': card.onClick ? { border: '1px solid #CBD5E1' } : {},
+                    transition: 'border 0.15s ease',
+                  }}
+                >
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em', mb: 1 }}>
+                    {card.label}
+                  </Typography>
+                  <Typography sx={{ fontSize: '20px', fontWeight: 600, color: '#0D0D0D', mb: 0.5 }}>
+                    {card.value}
+                  </Typography>
+                  <Typography sx={{ fontSize: '13px', color: '#6B7280' }}>
+                    {card.sub}
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* ── Section: Attention Triage Feed ── */}
+          {/* → ConnectUI: AttentionFeed | dashboard.attentionFeed */}
+          <Box>
+            <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#0D0D0D', mb: 2 }}>
+              Needs your attention
+            </Typography>
+            <Stack spacing={1.5}>
+              {attentionCards.map((card) => {
+                const chipStyle = ATTENTION_CHIPS[card.status] || { bg: '#F1F5F9', color: '#6B7280' };
+                return (
+                  <Paper key={card.brand} sx={{ p: 0 }}>
+                    <Stack direction="row" alignItems="center" spacing={2} sx={{ p: '16px' }}>
+                      <Box sx={{
+                        width: 40, height: 40, bgcolor: '#F1F5F9', border: '1px solid #E4E4E7',
+                        borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0,
+                      }}>
+                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9CA3AF' }}>LOGO</Typography>
+                      </Box>
+                      <Stack sx={{ flex: 1 }}>
+                        <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#0D0D0D' }}>{card.brand}</Typography>
+                        <StatusChip label={card.status} bg={chipStyle.bg} color={chipStyle.color} />
+                      </Stack>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={card.ctaAction}
+                        sx={{
+                          fontSize: '13px', fontWeight: 500, color: '#374151',
+                          borderColor: '#CBD5E1', whiteSpace: 'nowrap',
+                          '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', borderColor: '#CBD5E1' }
+                        }}
+                      >
+                        {card.cta}
+                      </Button>
+                    </Stack>
+                  </Paper>
+                );
+              })}
+            </Stack>
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <Typography
+                component="span"
+                onClick={() => handleSetScreen('pipeline-tracker')}
+                sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+              >
+                View all Pipeline →
+              </Typography>
+              <Typography
+                component="span"
+                onClick={() => handleSetScreen('client-tracker')}
+                sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+              >
+                View all Clients →
+              </Typography>
+            </Stack>
+          </Box>
+
+          {/* ── Section: Pre-Sale Tools ── */}
+          {/* → ConnectUI: PreSaleToolsRow | dashboard.preSaleTools */}
+          <Box>
+            <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#0D0D0D', mb: 2 }}>
+              Pre-Sale Tools
+            </Typography>
+            <Stack direction="row" spacing={2}>
+              {toolCards.map((tool) => (
+                <Paper
+                  key={tool.label}
+                  sx={{
+                    flex: 1, p: '16px', cursor: 'pointer',
+                    display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1,
+                    '&:hover': { border: '1px solid #CBD5E1' },
+                    transition: 'border 0.15s ease',
+                  }}
+                >
+                  <Box sx={{ color: '#6B7280' }}>{tool.icon}</Box>
+                  <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>{tool.label}</Typography>
+                </Paper>
+              ))}
+            </Stack>
+          </Box>
+        </Box>
+      );
+    }
+
+    // ── Pipeline Tracker Screen ────────────────────────────────────────────
+    // → ConnectUI: PipelineTrackerScreen | screen.pipelineTracker
+    function PipelineTrackerScreen({ setPipelineDrawerOpen, setSelectedCardId }) {
+      const columns = [
+        {
+          stage: 'Prospecting',
+          cards: [
+            { id: 'p1', brand: 'HydroFlask', revenue: '$28,000', lastTouch: '3 days ago', cta: 'Schedule Audit' },
+            { id: 'p2', brand: 'Away Travel',revenue: '$42,000', lastTouch: '1 day ago',  cta: 'Schedule Audit' },
+          ],
+        },
+        {
+          stage: 'Audit Requested',
+          cards: [
+            { id: 'p3', brand: 'Cotopaxi',   revenue: '$19,000', lastTouch: '5 days ago', cta: 'View Audit' },
+            { id: 'p4', brand: 'Patagonia',  revenue: '$67,000', lastTouch: '2 days ago', cta: 'View Audit' },
+          ],
+        },
+        {
+          stage: 'Pitching',
+          cards: [
+            { id: 'p5', brand: 'Authenteak', revenue: '$33,000', lastTouch: 'Today',      cta: 'Send Deck' },
+            { id: 'p6', brand: 'Sunday Scaries', revenue: '$15,000', lastTouch: '4 days ago', cta: 'Send Deck' },
+          ],
+        },
+        {
+          stage: 'Closing',
+          cards: [
+            { id: 'p7', brand: 'GoodRx',     revenue: '$88,000', lastTouch: 'Yesterday',  cta: 'Send Contract' },
+            { id: 'p8', brand: 'Burt\'s Bees', revenue: '$54,000', lastTouch: '1 day ago', cta: 'Send Contract' },
+          ],
+        },
+        {
+          stage: 'Signed',
+          cards: [
+            { id: 'p9', brand: 'Corkcicle',  revenue: '$39,000', lastTouch: 'Today',      cta: 'Start Onboarding' },
+            { id: 'p10', brand: 'MeUndies',  revenue: '$27,000', lastTouch: '2 days ago', cta: 'Start Onboarding' },
+          ],
+        },
+      ];
+
+      const handleCardClick = (cardId) => {
+        setSelectedCardId(cardId);
+        setPipelineDrawerOpen(true);
+      };
+
+      return (
+        <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', p: 3, bgcolor: '#EAEAF0' }}>
+          {/* ── Section: Kanban Board ── */}
+          {/* → ConnectUI: KanbanBoard | screen.pipelineTracker.kanban */}
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, overflowX: 'auto', flex: 1, pb: 2 }}>
+            {columns.map((col) => {
+              const chipStyle = STAGE_CHIPS[col.stage] || { bg: '#F1F5F9', color: '#6B7280' };
+              return (
+                <Box key={col.stage} sx={{ width: '280px', minWidth: '280px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                  {/* Column header */}
+                  <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 0.5 }}>
+                    <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      {col.stage}
+                    </Typography>
+                    <Box sx={{
+                      px: 1, py: '2px', bgcolor: '#F1F5F9', borderRadius: '9999px',
+                      fontSize: '12px', fontWeight: 500, color: '#6B7280',
+                    }}>
+                      {col.cards.length}
+                    </Box>
+                  </Stack>
+                  <Divider sx={{ borderColor: '#E4E4E7' }} />
+
+                  {/* Cards */}
+                  {col.cards.map((card) => (
+                    <Card
+                      key={card.id}
+                      onClick={() => handleCardClick(card.id)}
+                      sx={{
+                        cursor: 'pointer', p: 0,
+                        '&:hover': { border: '1px solid #CBD5E1' },
+                        transition: 'border 0.15s ease',
+                      }}
+                    >
+                      <CardContent sx={{ p: '16px !important' }}>
+                        <Stack spacing={1}>
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Box sx={{
+                              width: 32, height: 32, bgcolor: '#F1F5F9', border: '1px solid #E4E4E7',
+                              borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                            }}>
+                              <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9CA3AF' }}>LOGO</Typography>
+                            </Box>
+                            <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#0D0D0D' }}>
+                              {card.brand}
+                            </Typography>
+                          </Stack>
+                          <Typography sx={{ fontSize: '12px', color: '#6B7280' }}>
+                            Est. revenue: {card.revenue}
+                          </Typography>
+                          <Typography sx={{ fontSize: '12px', color: '#6B7280' }}>
+                            Last touch: {card.lastTouch}
+                          </Typography>
+                          <Stack direction="row" alignItems="center" justifyContent="space-between">
+                            <Avatar sx={{ width: 24, height: 24, bgcolor: '#E4E4E7', color: '#374151', fontSize: '12px', fontWeight: 500 }}>
+                              AJ
+                            </Avatar>
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              sx={{
+                                fontSize: '12px', fontWeight: 500, color: '#374151',
+                                borderColor: '#CBD5E1', py: 0, px: 1,
+                                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', borderColor: '#CBD5E1' }
+                              }}
+                            >
+                              {card.cta}
+                            </Button>
+                          </Stack>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+      );
+    }
+
+    // ── Pipeline Card Drawer ───────────────────────────────────────────────
+    // → ConnectUI: PipelineCardDrawer | overlay.pipelineCardDetail
+    // → Motion: drawer-open → ConnectUI: Drawer | transition: slide-left 250ms
+    function PipelineCardDrawer({ open, onClose, selectedCardId }) {
+      const brandName = selectedCardId === 'p9' ? 'Corkcicle' : selectedCardId === 'p5' ? 'Authenteak' : 'HydroFlask';
+
+      const stageHistory = [
+        { date: 'May 1, 2026', stage: 'Prospecting' },
+        { date: 'May 8, 2026', stage: 'Audit Requested' },
+        { date: 'May 12, 2026', stage: 'Pitching' },
+      ];
+
+      const associatedTools = [
+        { label: 'Revenue Calculator', icon: <Icon name="calculator" size={16} /> },
+        { label: 'Audit Request',       icon: <Icon name="clipboard-check" size={16} /> },
+        { label: 'Sales Materials',     icon: <Icon name="multiple-pages" size={16} /> },
+        { label: 'Pre-Unveil Tool',     icon: <Icon name="eye-alt" size={16} /> },
+      ];
+
+      return (
+        <Drawer
+          anchor="right"
+          variant="temporary"
+          open={open}
+          onClose={onClose}
+          PaperProps={{
+            sx: {
+              width: '480px', bgcolor: '#FFFFFF',
+              borderLeft: '1px solid #E4E4E7', boxShadow: 'none',
+            }
+          }}
+        >
+          {/* Drawer Header */}
+          <Stack direction="row" alignItems="center" sx={{
+            height: '56px', px: 3, borderBottom: '1px solid #E4E4E7', flexShrink: 0,
+          }}>
+            <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#0D0D0D', flex: 1 }}>
+              {brandName}
+            </Typography>
+            <IconButton size="small" onClick={onClose} sx={{ color: '#6B7280' }}>
+              <Icon name="x-mark" size={20} />
+            </IconButton>
+          </Stack>
+
+          {/* Drawer Body */}
+          <Box sx={{ overflowY: 'auto', flex: 1, p: 3 }}>
+            <Stack spacing={3}>
+              {/* Brand Info */}
+              <Stack spacing={1.5}>
+                <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  BRAND INFO
+                </Typography>
+                <Stack spacing={1}>
+                  <Stack direction="row" spacing={2}>
+                    <Typography sx={{ fontSize: '12px', color: '#6B7280', width: 80 }}>Site</Typography>
+                    <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>corkcicle.com</Typography>
+                  </Stack>
+                  <Stack direction="row" spacing={2}>
+                    <Typography sx={{ fontSize: '12px', color: '#6B7280', width: 80 }}>Est. Revenue</Typography>
+                    <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>$39,000/mo</Typography>
+                  </Stack>
+                  <Stack direction="row" spacing={2}>
+                    <Typography sx={{ fontSize: '12px', color: '#6B7280', width: 80 }}>Industry</Typography>
+                    <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>Consumer Goods</Typography>
+                  </Stack>
+                </Stack>
+              </Stack>
+
+              <Divider sx={{ borderColor: '#E4E4E7' }} />
+
+              {/* Stage History */}
+              <Stack spacing={1.5}>
+                <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  STAGE HISTORY
+                </Typography>
+                <List disablePadding>
+                  {stageHistory.map((entry) => (
+                    <Stack key={entry.date} direction="row" spacing={2} sx={{ py: 0.75 }}>
+                      <Typography sx={{ fontSize: '12px', color: '#6B7280', width: 96, flexShrink: 0 }}>{entry.date}</Typography>
+                      <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>{entry.stage}</Typography>
+                    </Stack>
+                  ))}
+                </List>
+                <PlaceholderBox label="STAGE HISTORY PLACEHOLDER" height={60} subtitle="Full timeline chart in production" />
+              </Stack>
+
+              <Divider sx={{ borderColor: '#E4E4E7' }} />
+
+              {/* Owner + Next Action */}
+              <Stack spacing={1.5}>
+                <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  OWNER + NEXT ACTION
+                </Typography>
+                <Stack direction="row" alignItems="center" spacing={1.5}>
+                  <Avatar sx={{ width: 24, height: 24, bgcolor: '#E4E4E7', color: '#374151', fontSize: '12px', fontWeight: 500 }}>
+                    AJ
+                  </Avatar>
+                  <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>Alex Johnson</Typography>
+                </Stack>
+                <TextField
+                  size="small"
+                  multiline
+                  rows={2}
+                  placeholder="Add next action…"
+                  fullWidth
+                  sx={{ '& .MuiOutlinedInput-root': { fontSize: '13px' } }}
+                />
+              </Stack>
+
+              <Divider sx={{ borderColor: '#E4E4E7' }} />
+
+              {/* Associated Tools */}
+              <Stack spacing={1.5}>
+                <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  ASSOCIATED TOOLS
+                </Typography>
+                <List disablePadding>
+                  {associatedTools.map((tool) => (
+                    <ListItemButton
+                      key={tool.label}
+                      sx={{
+                        px: 0, py: 0.75, gap: 1, color: '#374151',
+                        '&:hover': { bgcolor: 'transparent', color: '#0D0D0D' },
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <Box sx={{ color: '#6B7280' }}>{tool.icon}</Box>
+                      <Typography sx={{ fontSize: '13px', color: 'inherit' }}>{tool.label}</Typography>
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Stack>
+
+              <Divider sx={{ borderColor: '#E4E4E7' }} />
+
+              {/* Notes */}
+              <Stack spacing={1.5}>
+                <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  NOTES
+                </Typography>
+                <TextField
+                  size="small"
+                  multiline
+                  rows={4}
+                  placeholder="Add a note…"
+                  fullWidth
+                  sx={{ '& .MuiOutlinedInput-root': { fontSize: '13px' } }}
+                />
+              </Stack>
+            </Stack>
+          </Box>
+        </Drawer>
+      );
+    }
+
+    // ── Client Tracker Screen ──────────────────────────────────────────────
+    // → ConnectUI: ClientTrackerScreen | screen.clientTracker
+    function ClientTrackerScreen({ handleSetScreen, clientTrackerView, setClientTrackerView }) {
+      const onboardingRows = [
+        { brand: 'Corkcicle',   phase: 'Client Intake',       pct: 35, blocking: 'Brand assets missing',  missing: 'Logo files', owner: 'AJ', date: 'Jun 15, 2026' },
+        { brand: 'Authenteak',  phase: 'Platform Orientation', pct: 12, blocking: '—',                     missing: 'KPI targets', owner: 'SR', date: 'Jul 1, 2026' },
+        { brand: 'Nomad Goods', phase: 'Build Creative',       pct: 68, blocking: 'Creative review pending',missing: '—',          owner: 'KL', date: 'May 30, 2026' },
+        { brand: 'Cotopaxi',    phase: 'Testing & Approvals',  pct: 85, blocking: '—',                     missing: '—',          owner: 'AJ', date: 'May 20, 2026' },
+        { brand: 'MeUndies',    phase: 'Go Live',              pct: 97, blocking: '—',                     missing: 'Final approval', owner: 'SR', date: 'May 16, 2026' },
+      ];
+
+      const liveRows = [
+        { brand: 'GoodRx',       sends30d: '142,800', revenue30d: '$48,200', margin: '28%', blueprint: 'Core + SMS' },
+        { brand: 'Burt\'s Bees', sends30d: '89,400',  revenue30d: '$31,500', margin: '32%', blueprint: 'Core' },
+        { brand: 'Away Travel',  sends30d: '213,000', revenue30d: '$74,100', margin: '24%', blueprint: 'Core + SMS + Loyalty' },
+        { brand: 'Patagonia',    sends30d: '67,200',  revenue30d: '$22,900', margin: '35%', blueprint: 'Core' },
+      ];
+
+      const liveKpis = [
+        { label: 'Total Sends', value: '513,000' },
+        { label: 'Total Revenue', value: '$176,700' },
+        { label: 'Avg Margin', value: '29.8%' },
+        { label: 'Agency Earnings', value: '$52,700' },
+      ];
+
+      return (
+        <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', p: 3, bgcolor: '#EAEAF0', gap: 2 }}>
+          {/* ── Section: View Toggle ── */}
+          {/* → ConnectUI: ViewToggle | clientTracker.viewToggle */}
+          <ToggleButtonGroup
+            value={clientTrackerView}
+            exclusive
+            onChange={(e, val) => val && setClientTrackerView(val)}
+            size="small"
+            sx={{
+              alignSelf: 'flex-start',
+              '& .MuiToggleButton-root': {
+                borderColor: '#E4E4E7', color: '#6B7280', fontSize: '13px', px: 2,
+                '&.Mui-selected': { bgcolor: '#F8F9FC', color: '#0D0D0D', fontWeight: 500 },
+                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
+              }
+            }}
+          >
+            <ToggleButton value="onboarding">Onboarding</ToggleButton>
+            <ToggleButton value="live">Live / Performance</ToggleButton>
+            <ToggleButton value="all">All</ToggleButton>
+          </ToggleButtonGroup>
+
+          {/* ── Onboarding View ── */}
+          {/* → ConnectUI: OnboardingTable | clientTracker.onboardingView */}
+          {(clientTrackerView === 'onboarding' || clientTrackerView === 'all') && (
+            <Paper sx={{ overflow: 'hidden', p: 0 }}>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: '#F8F9FC' }}>
+                      {['Brand Name', 'Current Phase', '% Complete', 'Blocking', 'Missing from Client', 'Owner', 'Target Launch Date', 'Open in Workspace'].map((col) => (
+                        <TableCell key={col} sx={{
+                          fontSize: '12px', fontWeight: 500, color: '#6B7280',
+                          textTransform: 'uppercase', letterSpacing: '0.04em',
+                          whiteSpace: 'nowrap', py: 1.5,
+                        }}>
+                          {col}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {onboardingRows.map((row) => {
+                      const chipStyle = PHASE_CHIPS[row.phase] || { bg: '#F1F5F9', color: '#6B7280' };
+                      return (
+                        <TableRow
+                          key={row.brand}
+                          onClick={() => handleSetScreen('brand-workspace')}
+                          sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' }, height: '56px' }}
+                        >
+                          <TableCell>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                              <Box sx={{
+                                width: 24, height: 24, bgcolor: '#F1F5F9', border: '1px solid #E4E4E7',
+                                borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                              }}>
+                                <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9CA3AF' }}>L</Typography>
+                              </Box>
+                              <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D', whiteSpace: 'nowrap' }}>{row.brand}</Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell>
+                            <StatusChip label={row.phase} bg={chipStyle.bg} color={chipStyle.color} />
+                          </TableCell>
+                          <TableCell>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                              <LinearProgress
+                                variant="determinate"
+                                value={row.pct}
+                                sx={{
+                                  width: '80px', height: '6px', borderRadius: '3px',
+                                  bgcolor: '#E4E4E7',
+                                  '& .MuiLinearProgress-bar': { bgcolor: '#0D0D0D' }
+                                }}
+                              />
+                              <Typography sx={{ fontSize: '12px', color: '#6B7280' }}>{row.pct}%</Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151' }}>{row.blocking}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151' }}>{row.missing}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Stack direction="row" alignItems="center" spacing={0.75}>
+                              <Avatar sx={{ width: 20, height: 20, bgcolor: '#E4E4E7', color: '#374151', fontSize: '12px', fontWeight: 500 }}>
+                                {row.owner}
+                              </Avatar>
+                            </Stack>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151', whiteSpace: 'nowrap' }}>{row.date}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={(e) => { e.stopPropagation(); handleSetScreen('brand-workspace'); }}
+                              endIcon={<Icon name="nav-arrow-right" size={14} />}
+                              sx={{
+                                fontSize: '12px', fontWeight: 500, color: '#374151',
+                                borderColor: '#CBD5E1', whiteSpace: 'nowrap',
+                                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', borderColor: '#CBD5E1' }
+                              }}
+                            >
+                              Open
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          )}
+
+          {/* ── Live / Performance View ── */}
+          {/* → ConnectUI: LivePerformanceTable | clientTracker.liveView */}
+          {(clientTrackerView === 'live' || clientTrackerView === 'all') && (
+            <>
+              {/* Live KPI Strip */}
+              <Grid container spacing={2}>
+                {liveKpis.map((kpi) => (
+                  <Grid item xs={3} key={kpi.label}>
+                    <Paper sx={{ p: '16px' }}>
+                      <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.04em', mb: 1 }}>
+                        {kpi.label}
+                      </Typography>
+                      <Typography sx={{ fontSize: '20px', fontWeight: 600, color: '#0D0D0D' }}>
+                        {kpi.value}
+                      </Typography>
+                    </Paper>
+                  </Grid>
+                ))}
+              </Grid>
+
+              {/* Live Table */}
+              <Paper sx={{ overflow: 'hidden', p: 0 }}>
+                <TableContainer>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow sx={{ bgcolor: '#F8F9FC' }}>
+                        {['Brand Name', 'Phase', 'Sends 30d', 'Revenue 30d', 'Margin', 'Blueprint', 'Open'].map((col) => (
+                          <TableCell key={col} sx={{
+                            fontSize: '12px', fontWeight: 500, color: '#6B7280',
+                            textTransform: 'uppercase', letterSpacing: '0.04em',
+                            whiteSpace: 'nowrap', py: 1.5,
+                          }}>
+                            {col}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {liveRows.map((row) => (
+                        <TableRow
+                          key={row.brand}
+                          onClick={() => handleSetScreen('brand-workspace')}
+                          sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' }, height: '48px' }}
+                        >
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', fontWeight: 500, color: '#0D0D0D' }}>{row.brand}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <StatusChip label="Live" bg="#DCFCE7" color="#166534" />
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151' }}>{row.sends30d}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151' }}>{row.revenue30d}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151' }}>{row.margin}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: '13px', color: '#374151' }}>{row.blueprint}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={(e) => { e.stopPropagation(); handleSetScreen('brand-workspace'); }}
+                              endIcon={<Icon name="nav-arrow-right" size={14} />}
+                              sx={{
+                                fontSize: '12px', fontWeight: 500, color: '#374151',
+                                borderColor: '#CBD5E1', whiteSpace: 'nowrap',
+                                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', borderColor: '#CBD5E1' }
+                              }}
+                            >
+                              Open
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </>
+          )}
+        </Box>
+      );
+    }
+
+    // ── Brand Workspace Screen ─────────────────────────────────────────────
+    // → ConnectUI: BrandWorkspaceScreen | screen.brandWorkspace
+    function BrandWorkspaceScreen({ brandWorkspaceActiveItem }) {
+      const labelMap = {
+        'brand-book':    'Brand Book',
+        'creativesphere': 'Creativesphere',
+        'connect':       'Connect',
+        'people':        'People',
+        'dimensions':    'Dimensions',
+      };
+      const activeLabel = labelMap[brandWorkspaceActiveItem] || 'Brand Book';
+
+      return (
+        <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', p: 3, bgcolor: '#EAEAF0', gap: 3 }}>
+          {/* ── Section: Brand Workspace Placeholder ── */}
+          {/* → ConnectUI: BrandWorkspacePane | screen.brandWorkspace.content */}
+          <Typography sx={{ fontSize: '20px', fontWeight: 600, color: '#0D0D0D' }}>
+            {activeLabel}
+          </Typography>
+
+          <Box sx={{
+            flex: 1, bgcolor: '#F1F5F9', border: '2px dashed #CBD5E1', borderRadius: 1,
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            justifyContent: 'center', padding: '48px', minHeight: 400,
+          }}>
+            <Typography sx={{ color: '#9CA3AF', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', mb: 1 }}>
+              BRAND-SCOPED COMPONENT PLACEHOLDER
+            </Typography>
+            <Typography sx={{ color: '#9CA3AF', fontSize: '12px', textAlign: 'center' }}>
+              This is where {activeLabel} content would render for Corkcicle
+            </Typography>
+          </Box>
+        </Box>
+      );
+    }
+
+    // ── Root App ───────────────────────────────────────────────────────────
+    function App() {
+      const [screen, setScreenRaw]                         = React.useState('besties-hub');
+      const [pipelineDrawerOpen, setPipelineDrawerOpen]    = React.useState(false);
+      const [selectedCardId, setSelectedCardId]            = React.useState(null);
+      const [clientTrackerView, setClientTrackerView]      = React.useState('onboarding');
+      const [brandWorkspaceActiveItem, setBrandWorkspaceActiveItem] = React.useState('brand-book');
+      const [siteValue, setSiteValue]                      = React.useState('corkcicle.com');
+
+      // Derived — never stored in state
+      // ANTI-PATTERN[QO]: railMode is a derived const, not useState.
+      // — Setting it via useState would allow it to desync from screen.
+      // — do not change
+      const railMode = screen === 'brand-workspace' ? 'brand' : 'agency';
+
+      const handleSetScreen = (newScreen) => {
+        if (newScreen !== 'pipeline-tracker') {
+          setPipelineDrawerOpen(false);
+          setSelectedCardId(null);
+        }
+        setScreenRaw(newScreen);
+      };
+
+      // ── AppBar selector ──
+      const renderAppBar = () => {
+        if (screen === 'besties-hub')       return <BestiesHubAppBar />;
+        if (screen === 'pipeline-tracker')  return <PipelineAppBar />;
+        if (screen === 'client-tracker')    return <ClientTrackerAppBar />;
+        if (screen === 'brand-workspace')   return <BrandWorkspaceAppBar siteValue={siteValue} setSiteValue={setSiteValue} />;
+        return <BestiesHubAppBar />;
+      };
+
+      return (
+        // Root container: full viewport, flex column, overflow hidden
+        <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', bgcolor: '#EAEAF0' }}>
+          {renderAppBar()}
+
+          {/* Content row: rail + main */}
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
+
+            {/* ── Left Rail (Permanent Drawer — always mounted) ── */}
+            {/* → ConnectUI: NavRail | layout.rail */}
+            {/* ANTI-PATTERN[QO]: position: 'relative' on PaperProps required.
+                — MUI permanent Drawer Paper defaults to position: fixed, pulling it out of flex flow.
+                — Setting relative keeps it as a proper flex child and makes AppBar sticky work correctly.
+                — do not change */}
+            <Drawer
+              variant="permanent"
+              PaperProps={{
+                sx: {
+                  position: 'relative',
+                  width: '240px',
+                  height: '100%',
+                  overflowY: 'auto',
+                  borderRight: '1px solid #E4E4E7',
+                  boxShadow: 'none',
+                  bgcolor: '#FFFFFF',
+                }
+              }}
+            >
+              {/* Rail transform: only the List children swap — Drawer shell stays mounted */}
+              {railMode === 'agency' ? (
+                <AgencyNavList screen={screen} handleSetScreen={handleSetScreen} />
+              ) : (
+                <BrandNavList
+                  brandWorkspaceActiveItem={brandWorkspaceActiveItem}
+                  setBrandWorkspaceActiveItem={setBrandWorkspaceActiveItem}
+                  handleSetScreen={handleSetScreen}
+                />
+              )}
+            </Drawer>
+
+            {/* ── Main Content ── */}
+            {screen === 'besties-hub' && (
+              <BestiesHubScreen
+                handleSetScreen={handleSetScreen}
+                setClientTrackerView={setClientTrackerView}
+              />
+            )}
+            {screen === 'pipeline-tracker' && (
+              <PipelineTrackerScreen
+                setPipelineDrawerOpen={setPipelineDrawerOpen}
+                setSelectedCardId={setSelectedCardId}
+              />
+            )}
+            {screen === 'client-tracker' && (
+              <ClientTrackerScreen
+                handleSetScreen={handleSetScreen}
+                clientTrackerView={clientTrackerView}
+                setClientTrackerView={setClientTrackerView}
+              />
+            )}
+            {screen === 'brand-workspace' && (
+              <BrandWorkspaceScreen
+                brandWorkspaceActiveItem={brandWorkspaceActiveItem}
+              />
+            )}
+          </Box>
+
+          {/* ── Pipeline Card Drawer (overlay, anchor right) ── */}
+          <PipelineCardDrawer
+            open={pipelineDrawerOpen}
+            onClose={() => { setPipelineDrawerOpen(false); setSelectedCardId(null); }}
+            selectedCardId={selectedCardId}
+          />
+        </Box>
+      );
+    }
+
+    // ── Render ─────────────────────────────────────────────────────────────
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      React.createElement(ThemeProvider, { theme },
+        React.createElement(App)
+      )
+    );
+  </script>
+</body>
+</html>
